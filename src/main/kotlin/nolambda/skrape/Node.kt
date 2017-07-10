@@ -1,4 +1,4 @@
-package nolambda.kgdom
+package nolambda.skrape
 
 interface Node {
     var name: String

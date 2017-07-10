@@ -1,7 +1,7 @@
-package nolambda.kgdom.test
+package nolambda.skrape.test
 
-import nolambda.kgdom.*
-import nolambda.kgdom.processor.jsoup.JsoupDocumentParser
+import nolambda.skrape.*
+import nolambda.skrape.processor.jsoup.JsoupDocumentParser
 
 fun main(args: Array<String>) {
     Page("https://news.ycombinator.com/") {
@@ -10,6 +10,6 @@ fun main(args: Array<String>) {
             "link" to attr("href")
         }
     }.run {
-        Kgdom(JsoupDocumentParser()).request(this)
+        Skrape(JsoupDocumentParser()).request(this)
     }
 }

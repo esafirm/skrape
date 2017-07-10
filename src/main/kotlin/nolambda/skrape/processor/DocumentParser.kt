@@ -1,6 +1,6 @@
-package nolambda.kgdom.processor
+package nolambda.skrape.processor
 
-import nolambda.kgdom.Page
+import nolambda.skrape.Page
 
 interface DocumentParser<out T> {
     fun parse(page: Page): T

@@ -2,8 +2,12 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="_main" target="1.8" />
+      <module name="_test" target="1.8" />
       <module name="kgdom_main" target="1.8" />
       <module name="kgdom_test" target="1.8" />
+      <module name="skrape_main" target="1.8" />
+      <module name="skrape_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

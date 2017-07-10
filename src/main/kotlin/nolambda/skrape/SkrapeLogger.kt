@@ -1,6 +1,6 @@
-package nolambda.kgdom
+package nolambda.skrape
 
-object KgLogger {
+object SkrapeLogger {
 
     var enableLog = true
 

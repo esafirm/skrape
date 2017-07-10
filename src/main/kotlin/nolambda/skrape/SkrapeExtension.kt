@@ -1,4 +1,4 @@
-package nolambda.kgdom
+package nolambda.skrape
 
 fun ParentElement.query(cssSelector: String, body: ElementBody): KGElement =
         Query(cssSelector = cssSelector, body = body).apply {

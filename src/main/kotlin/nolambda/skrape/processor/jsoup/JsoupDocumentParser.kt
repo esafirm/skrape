@@ -1,11 +1,11 @@
-package nolambda.kgdom.processor.jsoup
+package nolambda.skrape.processor.jsoup
 
 import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJson
 import com.google.gson.JsonObject
-import nolambda.kgdom.*
-import nolambda.kgdom.processor.DocumentParser
+import nolambda.skrape.*
+import nolambda.skrape.processor.DocumentParser
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
@@ -47,7 +47,7 @@ class JsoupDocumentParser : DocumentParser<String> {
     }
 
     fun processElement(kgElement: KGElement, element: Element, json: JsonObject) {
-        KgLogger.log("$kgElement")
+        SkrapeLogger.log("$kgElement")
 
         when (kgElement) {
             is ParentElement -> when (kgElement) {
