@@ -17,15 +17,11 @@ typealias ElementBody = ParentElement.() -> Unit
 /* --------------------------------------------------- */
 
 class Page(val url: String, override var name: String = "", val body: ElementBody) : ParentElement() {
-    override fun toString(): String {
-        return "Page(url='$url', name='$name')"
-    }
+    override fun toString(): String = "Page(url='$url', name='$name')"
 }
 
 class Query(val cssSelector: String, override var name: String = "", val body: ElementBody) : ParentElement() {
-    override fun toString(): String {
-        return "Query(name='$name', cssSelector='$cssSelector')"
-    }
+    override fun toString(): String = "Query(name='$name', cssSelector='$cssSelector')"
 }
 
 /* --------------------------------------------------- */
@@ -37,7 +33,5 @@ class Attr(override var name: String = "", val node: Node, val attrName: String)
 }
 
 class Text(override var name: String = "", val node: Node) : KGElement() {
-    override fun toString(): String {
-        return "Text(name='$name', node=$node)"
-    }
+    override fun toString(): String = "Text(name='$name', node=$node)"
 }
