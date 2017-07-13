@@ -39,4 +39,5 @@ dependencies {
     /* --------------------------------------------------- */
 
     testCompile 'io.kotlintest:kotlintest:2.0.3'
+    testCompile 'junit:junit:4.12'
 }

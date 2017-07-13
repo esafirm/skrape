@@ -1,5 +1,7 @@
-package nolambda.skrape.test
+package nolamda.skrape
 
+import io.kotlintest.matchers.shouldNotBe
+import io.kotlintest.specs.StringSpec
 import nolambda.skrape.*
 import nolambda.skrape.nodes.Page
 import nolambda.skrape.processor.jsoup.JsoupDocumentParser
@@ -7,17 +9,23 @@ import java.io.File
 
 typealias StringSkrape = Skrape<String>
 
-fun main(args: Array<String>) {
-    Skrape(JsoupDocumentParser()).run {
-        requestWithLocalFile(this)
+class SkrapeTest : StringSpec() {
+    init {
+        val skrape = Skrape(JsoupDocumentParser())
+        "Parsing local file" {
+            requestWithFile(skrape) shouldNotBe null
+        }
+        "Parsing from url" {
+            requestWithUrl(skrape) shouldNotBe null
+        }
     }
 }
 
-fun requestWithLocalFile(skrape: StringSkrape) {
+fun requestWithFile(skrape: StringSkrape): String {
     val classLoader = ClassLoader.getSystemClassLoader()
     val file = File(classLoader.getResource("index.html").file)
 
-    Page(file) {
+    return Page(file) {
         "athing" to query("span.score") {
             "score" to text()
         }
@@ -29,6 +37,7 @@ fun requestWithLocalFile(skrape: StringSkrape) {
         skrape.request(this)
     }
 }
+
 
 fun requestWithUrl(skrape: StringSkrape) {
     Page("https://news.ycombinator.com/") {
