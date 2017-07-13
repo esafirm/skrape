@@ -3,7 +3,10 @@ package nolambda.skrape.processor.jsoup
 import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJson
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import nolambda.skrape.SkrapeLogger
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.DocumentParser
@@ -16,9 +19,7 @@ class JsoupDocumentParser : DocumentParser<String> {
 
     override fun parse(page: Page): String {
         val document = getDocument(page)
-        return jsonObject().apply {
-            processElement(page, document, this)
-        }.toString()
+        return processPage(page, document).toString()
     }
 
     fun getDocument(page: Page): Document {
@@ -32,44 +33,53 @@ class JsoupDocumentParser : DocumentParser<String> {
         }
     }
 
-    fun processPage(page: Page, element: Element, json: JsonObject) = with(page) {
-        body()
-        children.map {
-            processElement(it, element, json)
-        }
-    }
+    fun processPage(page: Page, element: Element): JsonObject = with(page) {
+        body.invoke(page)
 
-    fun processQuery(query: Query, element: Element, json: JsonObject) = with(query) {
-        body()
-        val jsonArray = jsonArray()
-        element.select(cssSelector).map { child ->
-            val childJson = jsonObject()
+        jsonObject().apply {
             children.map {
-                processElement(it, child, childJson)
+                processElement(it, element)
+            }.map { (name, jsonElement) ->
+                add(name, jsonElement)
             }
-            jsonArray.add(childJson)
         }
-        json.add(name, jsonArray)
     }
 
-    fun processText(text: Text, element: Element, json: JsonObject) = with(text) {
-        json.add(name, element.text().toJson())
-    }
+    fun processQuery(query: Query, element: Element): Pair<String, JsonArray> = with(query) {
+        body.invoke(query)
 
-    fun processAttr(attr: Attr, element: Element, json: JsonObject) = with(attr) {
-        json.add(name, element.attr(attrName).toJson())
-    }
-
-    fun processElement(kgElement: KGElement, element: Element, json: JsonObject) {
-        SkrapeLogger.log("$kgElement")
-
-        when (kgElement) {
-            is ParentElement -> when (kgElement) {
-                is Page -> processPage(kgElement, element, json)
-                is Query -> processQuery(kgElement, element, json)
+        val jsonArray = jsonArray()
+        element.select(cssSelector).map { jsoupElement ->
+            val jsonObject = jsonObject()
+            children.map {
+                processElement(it, jsoupElement)
+            }.map { (jsonName, jsonElement) ->
+                jsonObject.add(jsonName, jsonElement)
             }
-            is Text -> processText(kgElement, element, json)
-            is Attr -> processAttr(kgElement, element, json)
+            jsonObject
+        }.forEach {
+            jsonArray.add(it)
+        }
+
+        name to jsonArray
+    }
+
+    fun processText(text: Text, element: Element): Pair<String, JsonPrimitive> = with(text) {
+        name to element.text().toJson()
+    }
+
+    fun processAttr(attr: Attr, element: Element): Pair<String, JsonPrimitive> = with(attr) {
+        name to element.attr(attrName).toJson()
+    }
+
+    fun processElement(skrapeEle: SkrapeElemenet, element: Element): Pair<String, JsonElement> {
+        SkrapeLogger.log("$skrapeEle")
+
+        return when (skrapeEle) {
+            is Query -> processQuery(skrapeEle, element)
+            is Text -> processText(skrapeEle, element)
+            is Attr -> processAttr(skrapeEle, element)
+            else -> throw IllegalStateException("Skrape Element undefined")
         }
     }
 }

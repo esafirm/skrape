@@ -18,6 +18,9 @@ fun requestWithLocalFile(skrape: StringSkrape) {
     val file = File(classLoader.getResource("index.html").file)
 
     Page(file) {
+        "athing" to query("span.score") {
+            "value" to text()
+        }
         "items" to query("td a.storylink") {
             "text" to text()
             "link" to attr("href")

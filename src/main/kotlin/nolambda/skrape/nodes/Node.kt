@@ -6,10 +6,10 @@ interface Node {
     var name: String
 }
 
-sealed class KGElement : Node
+sealed class SkrapeElemenet : Node
 
-abstract class ParentElement : KGElement() {
-    val children = arrayListOf<KGElement>()
+abstract class ParentElement : SkrapeElemenet() {
+    val children = arrayListOf<SkrapeElemenet>()
 }
 
 typealias ElementBody = ParentElement.() -> Unit
@@ -36,10 +36,10 @@ class Query(val cssSelector: String, override var name: String = "", val body: E
 /* > Child Elements */
 /* --------------------------------------------------- */
 
-class Attr(override var name: String = "", val node: Node, val attrName: String) : KGElement() {
+class Attr(override var name: String = "", val node: Node, val attrName: String) : SkrapeElemenet() {
     override fun toString(): String = "Attr(name='$name', nodes=$node, attrName='$attrName')"
 }
 
-class Text(override var name: String = "", val node: Node) : KGElement() {
+class Text(override var name: String = "", val node: Node) : SkrapeElemenet() {
     override fun toString(): String = "Text(name='$name', nodes=$node)"
 }
