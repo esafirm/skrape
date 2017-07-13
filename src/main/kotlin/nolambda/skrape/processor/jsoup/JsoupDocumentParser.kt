@@ -4,18 +4,32 @@ import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJson
 import com.google.gson.JsonObject
-import nolambda.skrape.*
+import nolambda.skrape.SkrapeLogger
+import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.DocumentParser
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import java.io.File
 
 class JsoupDocumentParser : DocumentParser<String> {
 
     override fun parse(page: Page): String {
-        val document = Jsoup.connect(page.url).get()
+        val document = getDocument(page)
         return jsonObject().apply {
             processElement(page, document, this)
         }.toString()
+    }
+
+    fun getDocument(page: Page): Document {
+        val (path, baseUrl, encoding) = page.pageInfo
+
+        if (page.isLocalFile()) {
+            val file = File(path)
+            return Jsoup.parse(file, encoding, baseUrl)
+        } else {
+            return Jsoup.connect(baseUrl).get()
+        }
     }
 
     fun processPage(page: Page, element: Element, json: JsonObject) = with(page) {

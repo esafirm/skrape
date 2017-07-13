@@ -1,5 +1,7 @@
 package nolambda.skrape
 
+import nolambda.skrape.nodes.*
+
 fun ParentElement.query(cssSelector: String, body: ElementBody): KGElement =
         Query(cssSelector = cssSelector, body = body).apply {
             postCreate(this@query, this)
