@@ -6,8 +6,8 @@ import nolambda.skrape.SkrapeLogger as logger
 
 class Skrape<out T>(val parser: DocumentParser<T>) {
 
-    fun request(page: Page) {
-        logger.log("Requesting $page …")
-        logger.log("Result ${parser.parse(page)}")
+    fun request(page: Page): T {
+        logger.log("Requesting $this")
+        return parser.parse(page).also { logger.log("Result $it") }
     }
 }

@@ -9,13 +9,20 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import nolambda.skrape.SkrapeLogger
 import nolambda.skrape.nodes.*
-import nolambda.skrape.processor.DocumentParser
+import nolambda.skrape.processor.AbstractDocumentParser
+import nolambda.skrape.processor.formatter.addFormatter
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import java.io.File
 
-class JsoupDocumentParser : DocumentParser<String> {
+typealias JsoupParserResult = Pair<String, JsonElement>
+
+class JsoupDocumentParser : AbstractDocumentParser<Element, JsoupParserResult, String>() {
+
+    init {
+        addFormatter(JsoupValueFormatter())
+    }
 
     override fun parse(page: Page): String {
         val document = getDocument(page)
@@ -29,7 +36,7 @@ class JsoupDocumentParser : DocumentParser<String> {
             val file = File(path)
             return Jsoup.parse(file, encoding, baseUrl)
         } else {
-            return Jsoup.connect(baseUrl).get()
+            return Jsoup.connect(path).get()
         }
     }
 
@@ -64,7 +71,10 @@ class JsoupDocumentParser : DocumentParser<String> {
         name to jsonArray
     }
 
-    fun processText(text: Text, element: Element): Pair<String, JsonPrimitive> = with(text) {
+    fun processValue(value: Value<*>, element: Element): JsoupParserResult = with(value) {
+        if (formatterManager.isForType(value)) {
+            return formatterManager.format(value, element)
+        }
         name to element.text().toJson()
     }
 
@@ -72,13 +82,13 @@ class JsoupDocumentParser : DocumentParser<String> {
         name to element.attr(attrName).toJson()
     }
 
-    fun processElement(skrapeEle: SkrapeElemenet, element: Element): Pair<String, JsonElement> {
-        SkrapeLogger.log("$skrapeEle")
+    fun processElement(skrapeElemenet: SkrapeElemenet, element: Element): Pair<String, JsonElement> {
+        SkrapeLogger.log("$skrapeElemenet")
 
-        return when (skrapeEle) {
-            is Query -> processQuery(skrapeEle, element)
-            is Text -> processText(skrapeEle, element)
-            is Attr -> processAttr(skrapeEle, element)
+        return when (skrapeElemenet) {
+            is Query -> processQuery(skrapeElemenet, element)
+            is Value<*> -> processValue(skrapeElemenet, element)
+            is Attr -> processAttr(skrapeElemenet, element)
             else -> throw IllegalStateException("Skrape Element undefined")
         }
     }

@@ -19,7 +19,7 @@ fun requestWithLocalFile(skrape: StringSkrape) {
 
     Page(file) {
         "athing" to query("span.score") {
-            "value" to text()
+            "score" to text()
         }
         "items" to query("td a.storylink") {
             "text" to text()
