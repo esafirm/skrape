@@ -1,6 +1,8 @@
 allprojects {
     group 'nolambda.stream'
     version '1.0.0'
+
+    apply plugin: 'maven-publish'
 }
 
 buildscript {
