@@ -2,6 +2,10 @@ allprojects {
     group 'nolambda.stream'
     version '1.0.0'
 
+    repositories {
+        mavenCentral()
+    }
+
     apply plugin: 'maven-publish'
 }
 
@@ -13,11 +17,5 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
-allprojects {
-    repositories {
-        mavenCentral()
     }
 }
