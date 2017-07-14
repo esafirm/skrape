@@ -6,7 +6,7 @@ allprojects {
         mavenCentral()
     }
 
-    apply plugin: 'maven-publish'
+    apply plugin: 'maven'
 }
 
 buildscript {
