@@ -1,0 +1,9 @@
+group 'nolambda.stream'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'kotlin'
+
+dependencies {
+    compile project(':skrape-core')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

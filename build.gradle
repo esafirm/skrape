@@ -11,33 +11,13 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
-apply plugin: 'kotlin'
 
-repositories {
-    mavenCentral()
+allprojects {
+    repositories {
+        mavenCentral()
+    }
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_6
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_6
-}
-
-dependencies {
-    /* Kotlin */
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-
-    /* HTML Parser */
-    compile 'org.jsoup:jsoup:1.10.3'
-
-    /* JSON */
-    compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
-
-    /* --------------------------------------------------- */
-    /* > Test */
-    /* --------------------------------------------------- */
-
-    testCompile 'io.kotlintest:kotlintest:2.0.3'
-    testCompile 'junit:junit:4.12'
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
