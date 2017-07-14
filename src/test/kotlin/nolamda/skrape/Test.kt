@@ -36,9 +36,8 @@ fun requestWithFile(skrape: StringSkrape): String {
     return Page(file) {
         "items" to query("td a.storylink") {
             "text" to text()
-            "link" to attr("href")
-            "info" to container {
-                "text" to text()
+            "detail" to container {
+                "link" to attr("href")
             }
         }
     }.run {

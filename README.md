@@ -10,7 +10,9 @@ Define your query in type-safe Kotlin DSL
 Page("https://news.ycombinator.com/") {
   "items" to query("td a.storylink") {
     "text" to text()
-    "link" to attr("href")
+    "info" to container {
+      "link" to attr("href")
+    }
   }
 }.run {
   Skrape(JsoupDocumentParser()).request(this)
@@ -22,17 +24,25 @@ To predictable JSON result
 {
     "items": [
         {
-            "text": "Awk driven IoT",
-            "link": "https://anisse.astier.eu/awk-driven-iot.html"
+            "text": "SFO near miss could have triggered \u2018greatest aviation disaster in history'",
+            "detail": {
+                "link": "http://www.mercurynews.com/2017/07/10/exclusive-sfo-near-miss-might-have-triggered-greatest-aviation-disaster-in-history/"
+            }
         },
         {
-            "text": "Soti \u2013 A B firm built in a basement",
-            "link": "http://www.bbc.com/news/business-40504764"
-        },
-        ...
+            "text": "Taking control of all .io domains with a targeted registration",
+            "detail": {
+                "link": "https://thehackerblog.com/the-io-error-taking-control-of-all-io-domains-with-a-targeted-registration/"
+            }
+        }
     ]
+    ...
 }
 ```
+
+## Binaries
+
+Coming soon
 
 ## License
 
