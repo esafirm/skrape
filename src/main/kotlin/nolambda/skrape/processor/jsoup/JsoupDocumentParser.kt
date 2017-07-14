@@ -71,6 +71,20 @@ class JsoupDocumentParser : AbstractDocumentParser<Element, JsoupParserResult, S
         name to jsonArray
     }
 
+    fun processContainer(container: Container, element: Element): Pair<String, JsonElement> = with(container) {
+        body.invoke(container)
+
+        val jsonObject = jsonObject()
+
+        children.map {
+            processElement(it, element)
+        }.forEach { (jsonName, jsonElement) ->
+            jsonObject.add(jsonName, jsonElement)
+        }
+
+        name to jsonObject
+    }
+
     fun processValue(value: Value<*>, element: Element): JsoupParserResult = with(value) {
         if (formatterManager.isForType(value)) {
             return formatterManager.format(value, element)
@@ -89,6 +103,7 @@ class JsoupDocumentParser : AbstractDocumentParser<Element, JsoupParserResult, S
             is Query -> processQuery(skrapeElemenet, element)
             is Value<*> -> processValue(skrapeElemenet, element)
             is Attr -> processAttr(skrapeElemenet, element)
+            is Container -> processContainer(skrapeElemenet, element)
             else -> throw IllegalStateException("Skrape Element undefined")
         }
     }

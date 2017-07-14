@@ -3,8 +3,8 @@ package nolamda.skrape
 import com.google.gson.Gson
 import io.kotlintest.matchers.shouldNotBe
 import io.kotlintest.specs.StringSpec
-import nolambda.skrape.*
-import nolambda.skrape.nodes.Page
+import nolambda.skrape.Skrape
+import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.jsoup.JsoupDocumentParser
 import java.io.File
 
@@ -37,6 +37,9 @@ fun requestWithFile(skrape: StringSkrape): String {
         "items" to query("td a.storylink") {
             "text" to text()
             "link" to attr("href")
+            "info" to container {
+                "text" to text()
+            }
         }
     }.run {
         skrape.request(this)

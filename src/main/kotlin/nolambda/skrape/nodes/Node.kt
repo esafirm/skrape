@@ -34,6 +34,10 @@ class Query(val cssSelector: String, override var name: String = "", val body: E
     override fun toString(): String = "Query(name='$name', cssSelector='$cssSelector')"
 }
 
+class Container(override var name: String = "", val body: ElementBody) : ParentElement() {
+    override fun toString(): String = "Wrapper(name='$name', body=$body)"
+}
+
 /* --------------------------------------------------- */
 /* > Child Elements */
 /* --------------------------------------------------- */

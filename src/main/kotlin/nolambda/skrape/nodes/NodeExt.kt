@@ -1,12 +1,24 @@
-package nolambda.skrape
+package nolambda.skrape.nodes
 
-import nolambda.skrape.nodes.*
 import kotlin.reflect.KClass
 
-fun ParentElement.query(cssSelector: String, body: ElementBody): SkrapeElemenet =
+/* --------------------------------------------------- */
+/* > Parent */
+/* --------------------------------------------------- */
+
+fun ParentElement.query(cssSelector: String, body: ElementBody): ParentElement =
         Query(cssSelector = cssSelector, body = body).apply {
             postCreate(this@query, this)
         }
+
+fun ParentElement.container(body: ElementBody): ParentElement =
+        Container(body = body).apply {
+            postCreate(this@container, this)
+        }
+
+/* --------------------------------------------------- */
+/* > Child */
+/* --------------------------------------------------- */
 
 fun ParentElement.attr(attrName: String): SkrapeElemenet =
         Attr(node = this, attrName = attrName).apply {
