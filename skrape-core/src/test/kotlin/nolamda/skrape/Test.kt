@@ -4,12 +4,7 @@ import com.google.gson.Gson
 import io.kotlintest.matchers.shouldNotBe
 import io.kotlintest.specs.StringSpec
 import nolambda.skrape.Skrape
-import nolambda.skrape.nodes.Page
-import nolambda.skrape.nodes.attr
-import nolambda.skrape.nodes.container
-import nolambda.skrape.nodes.query
-import nolambda.skrape.nodes.text
-import nolambda.skrape.nodes.to
+import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.jsoup.JsoupDocumentParser
 import java.io.File
 
