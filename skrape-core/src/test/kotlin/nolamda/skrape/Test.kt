@@ -4,7 +4,12 @@ import com.google.gson.Gson
 import io.kotlintest.matchers.shouldNotBe
 import io.kotlintest.specs.StringSpec
 import nolambda.skrape.Skrape
-import nolambda.skrape.nodes.*
+import nolambda.skrape.nodes.Page
+import nolambda.skrape.nodes.attr
+import nolambda.skrape.nodes.container
+import nolambda.skrape.nodes.query
+import nolambda.skrape.nodes.text
+import nolambda.skrape.nodes.to
 import nolambda.skrape.processor.jsoup.JsoupDocumentParser
 import java.io.File
 
@@ -12,7 +17,11 @@ typealias StringSkrape = Skrape<String>
 
 class SkrapeTest : StringSpec() {
     init {
-        val skrape = Skrape(JsoupDocumentParser())
+        val skrape = Skrape(JsoupDocumentParser {
+            proxy(null)
+            userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+            referrer("google.com")
+        })
         val gson = Gson()
 
         "Parsing local file" {
@@ -57,5 +66,7 @@ fun requestWithUrl(skrape: StringSkrape) {
         }
     }.run {
         skrape.request(this)
-    }
+    }.let {
+            print(it)
+        }
 }
