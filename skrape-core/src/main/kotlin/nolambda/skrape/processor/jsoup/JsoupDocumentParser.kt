@@ -3,7 +3,10 @@ package nolambda.skrape.processor.jsoup
 import com.github.salomonbrys.kotson.jsonArray
 import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJson
-import com.google.gson.*
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import nolambda.skrape.SkrapeLogger
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.AbstractDocumentParser
@@ -18,7 +21,7 @@ import java.io.File
 typealias JsoupParserResult = Pair<String, JsonElement>
 
 class JsoupDocumentParser(val connection: (Connection.() -> Unit)? = null) : AbstractDocumentParser<Element, JsoupParserResult, String>() {
-    
+
     init {
         addFormatter(JsoupValueFormatter())
     }
