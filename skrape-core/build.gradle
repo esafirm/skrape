@@ -20,7 +20,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     /* HTML Parser */
-    implementation 'org.jsoup:jsoup:1.10.3'
+    api 'org.jsoup:jsoup:1.10.3'
 
     /* JSON */
     implementation 'com.github.salomonbrys.kotson:kotson:2.5.0'

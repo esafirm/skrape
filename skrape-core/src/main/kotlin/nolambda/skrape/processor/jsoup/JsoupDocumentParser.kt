@@ -11,14 +11,18 @@ import nolambda.skrape.SkrapeLogger
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.AbstractDocumentParser
 import nolambda.skrape.processor.formatter.addFormatter
+import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import java.io.File
 
 typealias JsoupParserResult = Pair<String, JsonElement>
+typealias JsoupConfig = Connection.() -> Unit
 
-class JsoupDocumentParser : AbstractDocumentParser<Element, JsoupParserResult, String>() {
+class JsoupDocumentParser(
+    private val config: JsoupConfig = {}
+) : AbstractDocumentParser<Element, JsoupParserResult, String>() {
 
     init {
         addFormatter(JsoupValueFormatter())
@@ -32,11 +36,13 @@ class JsoupDocumentParser : AbstractDocumentParser<Element, JsoupParserResult, S
     fun getDocument(page: Page): Document {
         val (path, baseUrl, encoding) = page.pageInfo
 
-        if (page.isLocalFile()) {
+        return if (page.isLocalFile()) {
             val file = File(path)
-            return Jsoup.parse(file, encoding, baseUrl)
+            Jsoup.parse(file, encoding, baseUrl)
         } else {
-            return Jsoup.connect(path).get()
+            Jsoup.connect(path)
+                .apply(config)
+                .get()
         }
     }
 
