@@ -2,6 +2,6 @@ package nolambda.skrape.processor
 
 import nolambda.skrape.nodes.Page
 
-interface DocumentParser<out T> {
-    fun parse(page: Page): T
+interface PageAdapter<out T> {
+    fun adapt(page: Page): T
 }

@@ -9,7 +9,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import nolambda.skrape.SkrapeLogger
 import nolambda.skrape.nodes.*
-import nolambda.skrape.processor.AbstractDocumentParser
+import nolambda.skrape.processor.AbstractPageAdapter
 import nolambda.skrape.processor.formatter.addFormatter
 import org.jsoup.Connection
 import org.jsoup.Jsoup
@@ -20,15 +20,15 @@ import java.io.File
 typealias JsoupParserResult = Pair<String, JsonElement>
 typealias JsoupConfig = Connection.() -> Unit
 
-class JsoupDocumentParser(
+class JsoupPageAdapter(
     private val config: JsoupConfig = {}
-) : AbstractDocumentParser<Element, JsoupParserResult, String>() {
+) : AbstractPageAdapter<Element, JsoupParserResult, String>() {
 
     init {
         addFormatter(JsoupValueFormatter())
     }
 
-    override fun parse(page: Page): String {
+    override fun adapt(page: Page): String {
         val document = getDocument(page)
         return processPage(page, document).toString()
     }
