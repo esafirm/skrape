@@ -10,7 +10,7 @@ import java.io.File
 
 typealias StringSkrape = Skrape<String>
 
-class SkrapeTest : StringSpec() {
+class SkrapeSpec : StringSpec() {
     init {
         val skrape = Skrape(JsoupDocumentParser())
         val gson = Gson()

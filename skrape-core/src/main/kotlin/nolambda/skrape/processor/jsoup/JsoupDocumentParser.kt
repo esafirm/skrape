@@ -33,7 +33,7 @@ class JsoupDocumentParser(
         return processPage(page, document).toString()
     }
 
-    fun getDocument(page: Page): Document {
+    private fun getDocument(page: Page): Document {
         val (path, baseUrl, encoding) = page.pageInfo
 
         return if (page.isLocalFile()) {
@@ -46,7 +46,7 @@ class JsoupDocumentParser(
         }
     }
 
-    fun processPage(page: Page, element: Element): JsonObject = with(page) {
+    private fun processPage(page: Page, element: Element): JsonObject = with(page) {
         body.invoke(page)
 
         jsonObject().apply {
@@ -58,7 +58,7 @@ class JsoupDocumentParser(
         }
     }
 
-    fun processQuery(query: Query, element: Element): Pair<String, JsonArray> = with(query) {
+    private fun processQuery(query: Query, element: Element): Pair<String, JsonArray> = with(query) {
         body.invoke(query)
 
         val jsonArray = jsonArray()
@@ -77,7 +77,7 @@ class JsoupDocumentParser(
         name to jsonArray
     }
 
-    fun processContainer(container: Container, element: Element): Pair<String, JsonElement> = with(container) {
+    private fun processContainer(container: Container, element: Element): Pair<String, JsonElement> = with(container) {
         body.invoke(container)
 
         val jsonObject = jsonObject()
@@ -91,18 +91,18 @@ class JsoupDocumentParser(
         name to jsonObject
     }
 
-    fun processValue(value: Value<*>, element: Element): JsoupParserResult = with(value) {
+    private fun processValue(value: Value<*>, element: Element): JsoupParserResult = with(value) {
         if (formatterManager.isForType(value)) {
             return formatterManager.format(value, element)
         }
         name to element.text().toJson()
     }
 
-    fun processAttr(attr: Attr, element: Element): Pair<String, JsonPrimitive> = with(attr) {
+    private fun processAttr(attr: Attr, element: Element): Pair<String, JsonPrimitive> = with(attr) {
         name to element.attr(attrName).toJson()
     }
 
-    fun processElement(skrapeElemenet: SkrapeElemenet, element: Element): Pair<String, JsonElement> {
+    private fun processElement(skrapeElemenet: SkrapeElemenet, element: Element): Pair<String, JsonElement> {
         SkrapeLogger.log("$skrapeElemenet")
 
         return when (skrapeElemenet) {
