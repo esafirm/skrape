@@ -5,7 +5,6 @@ import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJson
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import nolambda.skrape.SkrapeLogger
 import nolambda.skrape.nodes.*
@@ -46,15 +45,22 @@ class JsoupPageAdapter(
         }
     }
 
-    private fun processPage(page: Page, element: Element): JsonObject = with(page) {
+    private fun processPage(page: Page, element: Element): JsonElement = with(page) {
         body.invoke(page)
 
-        jsonObject().apply {
-            children.map {
-                processElement(it, element)
-            }.map { (name, jsonElement) ->
-                add(name, jsonElement)
-            }
+        if (isUselessContainer()) {
+            processChildren(page, element).map { it.second }.first()
+        } else {
+            jsonObject(processChildren(page, element))
+        }
+    }
+
+    private fun processChildren(
+        page: Page,
+        element: Element
+    ) = with(page) {
+        children.map {
+            processElement(it, element)
         }
     }
 

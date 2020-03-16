@@ -25,9 +25,18 @@ class Page(val pageInfo: PageInfo, override var name: String = "", val body: Ele
 
     override fun toString(): String = "Page(pageInfo=$pageInfo, name='$name', body=$body)"
 
-    val URL_REGEX = Regex("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]")
+    private val URL_REGEX = Regex("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]")
 
     fun isLocalFile(): Boolean = !pageInfo.path.matches(URL_REGEX)
+
+    fun isUselessContainer(): Boolean {
+        assert(children.isNotEmpty()) { "Page must have children!" }
+        if (children.size > 1) {
+            return false
+        }
+        val firstChild = children.first()
+        return firstChild is Query && firstChild.name.isBlank()
+    }
 }
 
 class Query(val cssSelector: String, override var name: String = "", val body: ElementBody) : ParentElement() {
