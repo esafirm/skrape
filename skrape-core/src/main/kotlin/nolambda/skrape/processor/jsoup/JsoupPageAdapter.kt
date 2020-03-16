@@ -10,6 +10,8 @@ import nolambda.skrape.SkrapeLogger
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.AbstractPageAdapter
 import nolambda.skrape.processor.formatter.addFormatter
+import nolambda.skrape.result.SimpleSkrapeResult
+import nolambda.skrape.result.SkrapeResult
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -21,15 +23,15 @@ typealias JsoupConfig = Connection.() -> Unit
 
 class JsoupPageAdapter(
     private val config: JsoupConfig = {}
-) : AbstractPageAdapter<Element, JsoupParserResult, String>() {
+) : AbstractPageAdapter<Element, JsoupParserResult, SkrapeResult>() {
 
     init {
         addFormatter(JsoupValueFormatter())
     }
 
-    override fun adapt(page: Page): String {
+    override fun adapt(page: Page): SkrapeResult {
         val document = getDocument(page)
-        return processPage(page, document).toString()
+        return SimpleSkrapeResult(processPage(page, document))
     }
 
     private fun getDocument(page: Page): Document {

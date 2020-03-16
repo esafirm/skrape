@@ -9,13 +9,14 @@ import io.kotlintest.specs.StringSpec
 import nolambda.skrape.Skrape
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.jsoup.JsoupPageAdapter
+import nolambda.skrape.result.SkrapeResult
 import java.io.File
 
-typealias StringSkrape = Skrape<String>
+typealias SimpleSkrape = Skrape<SkrapeResult>
 
 class SkrapeSpec : StringSpec() {
     init {
-        val skrape = Skrape(JsoupPageAdapter())
+        val skrape = Skrape(JsoupPageAdapter(), enableLog = true)
         val gson = Gson()
 
         "it parsing from local file" {
@@ -59,18 +60,18 @@ fun createSecondPagee(file: File): Page {
     }
 }
 
-fun requestWithFile(skrape: StringSkrape, pageCreator: (File) -> Page): String {
+fun requestWithFile(skrape: SimpleSkrape, pageCreator: (File) -> Page): String {
     val classLoader = ClassLoader.getSystemClassLoader()
     val file = File(classLoader.getResource("index.html").file)
 
     return pageCreator(file).run {
-        skrape.request(this)
+        skrape.request(this).json()
     }
 }
 
 
-fun requestWithUrl(skrape: StringSkrape) {
-    Page("https://news.ycombinator.com/") {
+fun requestWithUrl(skrape: SimpleSkrape): String {
+    return Page("https://news.ycombinator.com/") {
         "athing" to query("span.score") {
             "score" to text()
         }
@@ -80,5 +81,5 @@ fun requestWithUrl(skrape: StringSkrape) {
         }
     }.run {
         skrape.request(this)
-    }
+    }.json()
 }
