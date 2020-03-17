@@ -5,12 +5,13 @@ import com.github.salomonbrys.kotson.jsonObject
 import com.github.salomonbrys.kotson.toJson
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import nolambda.skrape.SkrapeLogger
 import nolambda.skrape.nodes.*
-import nolambda.skrape.processor.AbstractDocumentParser
+import nolambda.skrape.processor.AbstractPageAdapter
 import nolambda.skrape.processor.formatter.addFormatter
+import nolambda.skrape.result.SimpleSkrapeResult
+import nolambda.skrape.result.SkrapeResult
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -20,20 +21,20 @@ import java.io.File
 typealias JsoupParserResult = Pair<String, JsonElement>
 typealias JsoupConfig = Connection.() -> Unit
 
-class JsoupDocumentParser(
+class JsoupPageAdapter(
     private val config: JsoupConfig = {}
-) : AbstractDocumentParser<Element, JsoupParserResult, String>() {
+) : AbstractPageAdapter<Element, JsoupParserResult, SkrapeResult>() {
 
     init {
         addFormatter(JsoupValueFormatter())
     }
 
-    override fun parse(page: Page): String {
+    override fun adapt(page: Page): SkrapeResult {
         val document = getDocument(page)
-        return processPage(page, document).toString()
+        return SimpleSkrapeResult(processPage(page, document))
     }
 
-    fun getDocument(page: Page): Document {
+    private fun getDocument(page: Page): Document {
         val (path, baseUrl, encoding) = page.pageInfo
 
         return if (page.isLocalFile()) {
@@ -46,19 +47,26 @@ class JsoupDocumentParser(
         }
     }
 
-    fun processPage(page: Page, element: Element): JsonObject = with(page) {
-        body.invoke(page)
+    private fun processPage(page: Page, element: Element): JsonElement = with(page) {
+        evaluate()
 
-        jsonObject().apply {
-            children.map {
-                processElement(it, element)
-            }.map { (name, jsonElement) ->
-                add(name, jsonElement)
-            }
+        if (isUselessContainer()) {
+            processChildren(page, element).map { it.second }.first()
+        } else {
+            jsonObject(processChildren(page, element))
         }
     }
 
-    fun processQuery(query: Query, element: Element): Pair<String, JsonArray> = with(query) {
+    private fun processChildren(
+        page: Page,
+        element: Element
+    ) = with(page) {
+        children.map {
+            processElement(it, element)
+        }
+    }
+
+    private fun processQuery(query: Query, element: Element): Pair<String, JsonArray> = with(query) {
         body.invoke(query)
 
         val jsonArray = jsonArray()
@@ -77,7 +85,7 @@ class JsoupDocumentParser(
         name to jsonArray
     }
 
-    fun processContainer(container: Container, element: Element): Pair<String, JsonElement> = with(container) {
+    private fun processContainer(container: Container, element: Element): Pair<String, JsonElement> = with(container) {
         body.invoke(container)
 
         val jsonObject = jsonObject()
@@ -91,18 +99,18 @@ class JsoupDocumentParser(
         name to jsonObject
     }
 
-    fun processValue(value: Value<*>, element: Element): JsoupParserResult = with(value) {
+    private fun processValue(value: Value<*>, element: Element): JsoupParserResult = with(value) {
         if (formatterManager.isForType(value)) {
             return formatterManager.format(value, element)
         }
         name to element.text().toJson()
     }
 
-    fun processAttr(attr: Attr, element: Element): Pair<String, JsonPrimitive> = with(attr) {
+    private fun processAttr(attr: Attr, element: Element): Pair<String, JsonPrimitive> = with(attr) {
         name to element.attr(attrName).toJson()
     }
 
-    fun processElement(skrapeElemenet: SkrapeElemenet, element: Element): Pair<String, JsonElement> {
+    private fun processElement(skrapeElemenet: SkrapeElemenet, element: Element): Pair<String, JsonElement> {
         SkrapeLogger.log("$skrapeElemenet")
 
         return when (skrapeElemenet) {
