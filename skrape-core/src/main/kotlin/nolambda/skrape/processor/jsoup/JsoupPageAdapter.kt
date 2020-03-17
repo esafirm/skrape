@@ -48,7 +48,7 @@ class JsoupPageAdapter(
     }
 
     private fun processPage(page: Page, element: Element): JsonElement = with(page) {
-        body.invoke(page)
+        evaluate()
 
         if (isUselessContainer()) {
             processChildren(page, element).map { it.second }.first()
