@@ -45,7 +45,7 @@ class Page(
     fun isLocalFile(): Boolean = !pageInfo.path.matches(URL_REGEX)
 
     fun isUselessContainer(): Boolean {
-        assert(children.isNotEmpty()) { "Page must have children!" }
+        if (children.isEmpty()) return true
         if (children.size > 1) {
             return false
         }
