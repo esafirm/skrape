@@ -11,6 +11,9 @@ class JsonPageSeriliazerSpec : StringSpec({
     val page = Page("https://news.ycombinator.com/") {
         "athing" to query("span.score") {
             "score" to text()
+            "info" to container {
+                "coolness" to attr("alt")
+            }
         }
         "items" to query("td a.storylink") {
             "text" to text()
@@ -32,13 +35,39 @@ class JsonPageSeriliazerSpec : StringSpec({
               "type": "query",
               "cssSelector": "span.score",
               "name": "athing",
-              "children": []
+              "children": [
+                {
+                  "type": "value",
+                  "name": "score"
+                },
+                {
+                  "type": "container",
+                  "name": "info",
+                  "children": [
+                    {
+                      "type": "attr",
+                      "name": "coolness",
+                      "attrName": "alt"
+                    }
+                  ]
+                }
+              ]
             },
             {
               "type": "query",
               "cssSelector": "td a.storylink",
               "name": "items",
-              "children": []
+              "children": [
+                {
+                  "type": "value",
+                  "name": "text"
+                },
+                {
+                  "type": "attr",
+                  "name": "link",
+                  "attrName": "href"
+                }
+              ]
             }
           ]
         }
@@ -59,8 +88,12 @@ class JsonPageSeriliazerSpec : StringSpec({
 
     "it deserialize to page" {
         val result = serializer.deserialize(pageString)
-        serializer.serialize(result) shouldBe pageString
 
-        print(result)
+        result.children.size shouldBe 2
+        result.pageInfo.path shouldBe "https://news.ycombinator.com/"
+
+        (result.children.first() as ParentElement).children.size shouldBe 2
+
+        serializer.serialize(result) shouldBe pageString
     }
 })

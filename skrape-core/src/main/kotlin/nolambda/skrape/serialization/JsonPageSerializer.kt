@@ -15,11 +15,11 @@ class JsonPageSerializer(private val gson: Gson = Gson()) : PageSerializer<Strin
 
     override fun deserialize(target: String): Page {
         val jsonObject = gson.fromJson(target, JsonObject::class.java)
-        val pageInfo = gson.fromJson(jsonObject.get(PageSerializer.KEY_PAGE_INFO), PageInfo::class.java)
+        val pageInfo = gson.fromJson(jsonObject[PageSerializer.KEY_PAGE_INFO], PageInfo::class.java)
 
-        return Page(pageInfo = pageInfo, name = jsonObject.get(PageSerializer.KEY_NAME).asString) {
+        return Page(pageInfo = pageInfo, name = jsonObject.getName()) {
             children.addAll(createChildrenFromJsonArray(jsonObject.getChildArray()))
-        }
+        }.evaluate()
     }
 
     private fun mapTypeToClass(type: String) = when (type) {
@@ -30,26 +30,50 @@ class JsonPageSerializer(private val gson: Gson = Gson()) : PageSerializer<Strin
         else -> throw IllegalArgumentException("Not a valid page JSON!")
     }
 
-    private fun createChildrenFromJson(child: JsonElement): SkrapeElemenet {
-        val clazz = mapTypeToClass(child["type"].asString)
-        if (clazz is ParentElement) {
-            child.fromJson(clazz).apply {
-                this as ParentElement
-                this.children.addAll(createChildrenFromJsonArray(child.getChildArray()))
-            }
+    private fun createElementFromJson(json: JsonElement): SkrapeElemenet {
+        val clazz = mapTypeToClass(json[PageSerializer.KEY_TYPE].asString)
+        return if (ParentElement::class.java.isAssignableFrom(clazz)) {
+            createParentElement(clazz, json)
+        } else {
+            json.fromJson(clazz)
         }
-        return child.fromJson(clazz)
+    }
+
+    private fun <T : SkrapeElemenet> createParentElement(clazz: Class<T>, content: JsonElement): SkrapeElemenet {
+        return when (clazz) {
+            Query::class.java -> Query(
+                content[PageSerializer.KEY_CSS_SELECTOR].asString,
+                content.getName(),
+                content.createBody()
+            )
+            Container::class.java -> Container(
+                content.getName(),
+                content.createBody()
+            )
+            else -> throw IllegalArgumentException("Not a valid parent class!")
+        }
     }
 
     private fun createChildrenFromJsonArray(children: JsonArray): List<SkrapeElemenet> {
         return children.map { child ->
-            createChildrenFromJson(child)
+            createElementFromJson(child)
         }
     }
 
     private fun JsonElement.getChildArray() =
-        gson.fromJson(get(PageSerializer.KEY_PAGE_CHILDREN), JsonArray::class.java)
+        get(PageSerializer.KEY_PAGE_CHILDREN).asJsonArray
 
-    private fun <T : SkrapeElemenet> JsonElement.fromJson(clazz: Class<T>) =
-        gson.fromJson(this, clazz)
+    private fun JsonElement.getName() =
+        get(PageSerializer.KEY_NAME).asString
+
+    private fun JsonElement.createBody(): ElementBody {
+        val json = this
+        return { children.addAll(createChildrenFromJsonArray(json.getChildArray())) }
+    }
+
+    private fun <T : SkrapeElemenet> JsonElement.fromJson(clazz: Class<T>): T {
+        return gson.fromJson(this, clazz)
+    }
+
+
 }

@@ -7,7 +7,7 @@ object ElementName {
     const val ELEMENT_QUERY = "query"
     const val ELEMENT_CONTAINER = "container"
     const val ELEMENT_ATTR = "attr"
-    const val ELEMENT_VALUE = "valuee"
+    const val ELEMENT_VALUE = "value"
 }
 
 interface Node {
@@ -39,32 +39,9 @@ class Page(
 
     override fun toString(): String = "Page(pageInfo=$pageInfo, name='$name', body=$body)"
 
-    @Transient
-    private val URL_REGEX = Regex("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]")
-
-    fun isLocalFile(): Boolean = !pageInfo.path.matches(URL_REGEX)
-
-    fun isUselessContainer(): Boolean {
-        if (children.isEmpty()) return true
-        if (children.size > 1) {
-            return false
-        }
-        val firstChild = children.first()
-        return firstChild is Query && firstChild.name.isBlank()
-    }
-
-    /**
-     * Evaluate all the children in this [Page]
-     * It mainly use if the page want to be serialized or processed
-     */
-    fun evaluate() = this.apply {
-        if (children.isEmpty()) {
-            body.invoke(this)
-        }
-    }
-
     override var type: String = ElementName.ELEMENT_PAGE
 }
+
 
 class Query(
     val cssSelector: String,
@@ -80,7 +57,7 @@ class Container(
     @Transient override val body: ElementBody
 ) : ParentElement() {
     override var type: String = ElementName.ELEMENT_CONTAINER
-    override fun toString(): String = "Wrapper(name='$name', body=$body)"
+    override fun toString(): String = "Container(name='$name', body=$body)"
 }
 
 /* --------------------------------------------------- */
@@ -89,18 +66,16 @@ class Container(
 
 class Attr(
     override var name: String = "",
-    val node: Node,
     val attrName: String
 ) : SkrapeElemenet() {
     override var type: String = ElementName.ELEMENT_ATTR
-    override fun toString(): String = "Attr(name='$name', nodes=$node, attrName='$attrName')"
+    override fun toString(): String = "Attr(name='$name', attrName='$attrName')"
 }
 
 class Value<T : Any>(
     override var name: String = "",
-    val node: Node,
-    val clazz: Class<T>
+    @Transient val clazz: Class<T>
 ) : SkrapeElemenet() {
     override var type: String = ElementName.ELEMENT_VALUE
-    override fun toString(): String = "Text(name='$name', nodes=$node)"
+    override fun toString(): String = "Text(name='$name')"
 }
