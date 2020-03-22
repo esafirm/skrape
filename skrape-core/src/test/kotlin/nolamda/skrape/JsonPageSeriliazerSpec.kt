@@ -82,8 +82,6 @@ class JsonPageSeriliazerSpec : StringSpec({
     "it serialize to string" {
         val result = serializer.serialize(page)
         result shouldBe pageString
-
-        print(result)
     }
 
     "it deserialize to page" {
