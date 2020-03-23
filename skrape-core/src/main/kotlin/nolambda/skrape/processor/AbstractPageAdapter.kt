@@ -1,6 +1,5 @@
 package nolambda.skrape.processor
 
-import nolambda.skrape.nodes.SkrapeElemenet
 import nolambda.skrape.processor.formatter.ValueFormatterManager
 import nolambda.skrape.result.SkrapeResult
 

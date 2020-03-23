@@ -10,12 +10,20 @@ class JsoupValueFormatter : ValueFormatter<Element, Pair<String, JsonElement>> {
 
     override fun isForType(value: Value<*>): Boolean {
         return value.clazz.let {
-            it == Boolean::class.java || it == Int::class.java
+            it == Boolean::class.java || it == Int::class.java || it == String::class.java
+        }
+    }
+
+    private fun extractValue(query: String, element: Element): String {
+        return if (query.isBlank()) {
+            element.text()
+        } else {
+            element.select(query).text()
         }
     }
 
     override fun format(value: Value<*>, element: Element): Pair<String, JsonElement> = with(value) {
-        val text = element.text()
+        val text = extractValue(value.query, element)
         name to when (value.clazz) {
             Boolean::class.java -> text.toBoolean().toJson()
             Int::class.java -> text.toInt().toJson()

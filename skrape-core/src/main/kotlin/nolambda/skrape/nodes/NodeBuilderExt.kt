@@ -7,32 +7,32 @@ import kotlin.reflect.KClass
 /* --------------------------------------------------- */
 
 fun ParentElement.query(cssSelector: String, body: ElementBody): ParentElement =
-        Query(cssSelector = cssSelector, body = body).apply {
-            postCreate(this@query, this)
-        }
+    Query(cssSelector = cssSelector, body = body).apply {
+        postCreate(this@query, this)
+    }
 
 fun ParentElement.container(body: ElementBody): ParentElement =
-        Container(body = body).apply {
-            postCreate(this@container, this)
-        }
+    Container(body = body).apply {
+        postCreate(this@container, this)
+    }
 
 /* --------------------------------------------------- */
 /* > Child */
 /* --------------------------------------------------- */
 
 fun ParentElement.attr(attrName: String): SkrapeElemenet =
-        Attr(attrName = attrName).apply {
-            postCreate(this@attr, this)
-        }
+    Attr(attrName = attrName).apply {
+        postCreate(this@attr, this)
+    }
 
-fun createValueElement(parent: ParentElement, clazz: KClass<*>): SkrapeElemenet =
-        Value(clazz = clazz.java).apply {
-            postCreate(parent, this)
-        }
+private fun ParentElement.createValueElement(clazz: KClass<*>, query: String): SkrapeElemenet =
+    Value(clazz = clazz.java, query = query).apply {
+        postCreate(this@createValueElement, this)
+    }
 
-fun ParentElement.text(): SkrapeElemenet = createValueElement(this, String::class)
-fun ParentElement.bool(): SkrapeElemenet = createValueElement(this, Boolean::class)
-fun ParentElement.int(): SkrapeElemenet = createValueElement(this, Int::class)
+fun ParentElement.text(query: String = ""): SkrapeElemenet = createValueElement(String::class, query)
+fun ParentElement.bool(query: String = ""): SkrapeElemenet = createValueElement(Boolean::class, query)
+fun ParentElement.int(query: String = ""): SkrapeElemenet = createValueElement(Int::class, query)
 
 internal fun postCreate(parent: ParentElement, child: SkrapeElemenet) {
     parent.children.add(child)

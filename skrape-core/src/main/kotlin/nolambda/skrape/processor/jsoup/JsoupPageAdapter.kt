@@ -10,7 +10,7 @@ import nolambda.skrape.SkrapeLogger
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.AbstractPageAdapter
 import nolambda.skrape.processor.formatter.addFormatter
-import nolambda.skrape.result.SimpleSkrapeResult
+import nolambda.skrape.result.QuerySkrapeResult
 import nolambda.skrape.result.SkrapeResult
 import org.jsoup.Connection
 import org.jsoup.Jsoup
@@ -31,7 +31,7 @@ class JsoupPageAdapter(
 
     override fun adapt(page: Page): SkrapeResult {
         val document = getDocument(page)
-        return SimpleSkrapeResult(processPage(page, document))
+        return QuerySkrapeResult(processPage(page, document))
     }
 
     private fun getDocument(page: Page): Document {
@@ -74,7 +74,7 @@ class JsoupPageAdapter(
             val jsonObject = jsonObject()
             children.map {
                 processElement(it, jsoupElement)
-            }.map { (jsonName, jsonElement) ->
+            }.forEach { (jsonName, jsonElement) ->
                 jsonObject.add(jsonName, jsonElement)
             }
             jsonObject
@@ -100,10 +100,7 @@ class JsoupPageAdapter(
     }
 
     private fun processValue(value: Value<*>, element: Element): JsoupParserResult = with(value) {
-        if (formatterManager.isForType(value)) {
-            return formatterManager.format(value, element)
-        }
-        name to element.text().toJson()
+        return formatterManager.format(value, element)
     }
 
     private fun processAttr(attr: Attr, element: Element): Pair<String, JsonPrimitive> = with(attr) {

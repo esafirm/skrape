@@ -74,8 +74,12 @@ class Attr(
 
 class Value<T : Any>(
     override var name: String = "",
-    @Transient val clazz: Class<T>
-) : SkrapeElemenet() {
+    @Transient val clazz: Class<T>,
+    val query: String = ""
+    ) : SkrapeElemenet() {
     override var type: String = ElementName.ELEMENT_VALUE
-    override fun toString(): String = "Text(name='$name')"
+    override fun toString(): String {
+        return "Value(name='$name', clazz=$clazz, query='$query')"
+    }
+
 }
