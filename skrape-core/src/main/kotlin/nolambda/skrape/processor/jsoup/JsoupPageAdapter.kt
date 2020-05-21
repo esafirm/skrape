@@ -103,11 +103,11 @@ class JsoupPageAdapter(
         return formatterManager.format(value, element)
     }
 
-    private fun processAttr(attr: Attr, element: Element): Pair<String, JsonPrimitive> = with(attr) {
+    private fun processAttr(attr: Attr, element: Element): JsoupParserResult = with(attr) {
         name to element.attr(attrName).toJson()
     }
 
-    private fun processElement(skrapeElemenet: SkrapeElemenet, element: Element): Pair<String, JsonElement> {
+    private fun processElement(skrapeElemenet: SkrapeElemenet, element: Element): JsoupParserResult {
         SkrapeLogger.log("$skrapeElemenet")
 
         return when (skrapeElemenet) {
