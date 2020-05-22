@@ -1,4 +1,4 @@
-package nolamda.skrape
+package nolambda.skrape
 
 import com.google.gson.annotations.SerializedName
 

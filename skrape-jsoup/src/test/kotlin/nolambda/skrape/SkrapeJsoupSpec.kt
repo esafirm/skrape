@@ -1,4 +1,4 @@
-package nolamda.skrape
+package nolambda.skrape
 
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -6,7 +6,6 @@ import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.matchers.shouldNotBe
 import io.kotlintest.specs.StringSpec
-import nolambda.skrape.Skrape
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.jsoup.JsoupPageAdapter
 import nolambda.skrape.result.SkrapeResult
@@ -14,7 +13,7 @@ import java.io.File
 
 typealias SimpleSkrape = Skrape<SkrapeResult>
 
-class SkrapeSpec : StringSpec() {
+class SkrapeJsoupSpec : StringSpec() {
     init {
         val skrape = Skrape(JsoupPageAdapter(), enableLog = true)
         val gson = Gson()
