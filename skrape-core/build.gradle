@@ -19,12 +19,8 @@ artifacts {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    /* HTML Parser */
-    api 'org.jsoup:jsoup:1.10.3'
-    implementation 'org.seleniumhq.selenium:selenium-java:3.8.1'
-
     /* JSON */
-    implementation 'com.github.salomonbrys.kotson:kotson:2.5.0'
+    api 'com.github.salomonbrys.kotson:kotson:2.5.0'
 
     /* --------------------------------------------------- */
     /* > Test */

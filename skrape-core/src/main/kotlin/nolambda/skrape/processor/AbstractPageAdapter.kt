@@ -49,7 +49,7 @@ abstract class AbstractPageAdapter<ELEMENT, R, out T : SkrapeResult> : PageAdapt
         return formatterManager.format(value, element)
     }
 
-    internal fun processElement(skrapeElemenet: SkrapeElemenet, element: ELEMENT): R {
+    protected fun processElement(skrapeElemenet: SkrapeElemenet, element: ELEMENT): R {
         SkrapeLogger.log("$skrapeElemenet")
 
         return when (skrapeElemenet) {

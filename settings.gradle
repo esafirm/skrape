@@ -1,2 +1,5 @@
 include 'skrape-core'
 include 'skrape-sample'
+include 'skrape-jsoup'
+include 'skrape-chrome'
+

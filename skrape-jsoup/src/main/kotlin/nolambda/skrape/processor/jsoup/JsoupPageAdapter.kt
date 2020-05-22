@@ -26,32 +26,19 @@ class JsoupPageAdapter(
     }
 
     override fun processQuery(query: Query, element: Element): JsoupParserResult = with(query) {
-        val jsonArray = jsonArray()
-        element.select(cssSelector).map { jsoupElement ->
-            val jsonObject = jsonObject()
-            children.map {
+        val children = element.select(cssSelector).map { jsoupElement ->
+            jsonObject(children.map {
                 processElement(it, jsoupElement)
-            }.forEach { (jsonName, jsonElement) ->
-                jsonObject.add(jsonName, jsonElement)
-            }
-            jsonObject
-        }.forEach {
-            jsonArray.add(it)
+            })
         }
-
-        name to jsonArray
+        name to jsonArray(children)
     }
 
     override fun processContainer(container: Container, element: Element): JsoupParserResult = with(container) {
-        val jsonObject = jsonObject()
-
-        children.map {
+        val children = children.map {
             processElement(it, element)
-        }.forEach { (jsonName, jsonElement) ->
-            jsonObject.add(jsonName, jsonElement)
         }
-
-        name to jsonObject
+        name to jsonObject(children)
     }
 
     override fun processAttr(attr: Attr, element: Element): JsoupParserResult = with(attr) {
