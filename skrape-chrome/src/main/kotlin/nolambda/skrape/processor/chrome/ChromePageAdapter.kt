@@ -17,10 +17,10 @@ import org.openqa.selenium.chrome.ChromeDriver
 typealias ChromeParserResult = Pair<String, JsonElement>
 
 class ChromePageAdapter(
-    options: ChromeDriver.() -> Unit
+    options: (ChromeDriver.() -> Unit)? = null
 ) : AbstractPageAdapter<ChromeElement, ChromeParserResult, SkrapeResult>() {
 
-    private val driver = ChromeDriver().apply(options)
+    private val driver = ChromeDriver().apply(options ?: {})
 
     init {
         addFormatter(ChromeValueFormatter())
