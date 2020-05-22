@@ -1,3 +1,6 @@
+# All build dir
+*/build/
+
 # User Defined
 .idea/
 

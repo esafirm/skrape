@@ -1,0 +1,24 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+group 'nolambda.stream'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':skrape-core')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    api 'org.seleniumhq.selenium:selenium-java:3.8.1'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}

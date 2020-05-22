@@ -1,8 +1,7 @@
-package nolamda.skrape
+package nolambda.skrape
 
 import com.google.gson.GsonBuilder
 import io.kotlintest.specs.StringSpec
-import nolambda.skrape.Skrape
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.jsoup.JsoupPageAdapter
 import nolambda.skrape.serialization.JsonPageSerializer
