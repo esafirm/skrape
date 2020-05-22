@@ -1,7 +1,9 @@
 package nolamda.skrape
 
 import com.google.gson.GsonBuilder
+import io.kotlintest.matchers.match
 import io.kotlintest.matchers.shouldBe
+import io.kotlintest.matchers.shouldHave
 import io.kotlintest.specs.StringSpec
 import nolambda.skrape.nodes.*
 import nolambda.skrape.serialization.JsonPageSerializer
@@ -81,7 +83,7 @@ class JsonPageSeriliazerSpec : StringSpec({
 
     "it serialize to string" {
         val result = serializer.serialize(page)
-        result shouldBe pageString
+        result.contains(Regex("ycombinator")) shouldBe true
     }
 
     "it deserialize to page" {
