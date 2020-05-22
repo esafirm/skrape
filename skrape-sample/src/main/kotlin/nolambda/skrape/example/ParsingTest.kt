@@ -2,6 +2,7 @@ package nolambda.skrape.example
 
 import nolambda.skrape.Skrape
 import nolambda.skrape.nodes.*
+import nolambda.skrape.processor.chrome.ChromePageAdapter
 import nolambda.skrape.processor.jsoup.JsoupPageAdapter
 
 fun main() {
@@ -14,11 +15,10 @@ fun main() {
             "link" to attr("href")
         }
     }
-    runJsoupSample(page)
-//    runChromeDriverSample(page)
+    println(runChromeDriverSample(page))
 }
 
-private fun runJsoupSample(page: Page) {
+private fun runJsoupSample(page: Page): String {
     println("Run Jsoup sample…")
 
     val mobileUa = "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) " +
@@ -30,13 +30,14 @@ private fun runJsoupSample(page: Page) {
 
     val skrape = Skrape(parser)
 
-    println(skrape.request(page).json())
+    return skrape.request(page).json()
 }
 
-private fun runChromeDriverSample(page: Page) {
-//    println("Run Chrome Driver sample…")
-//
-//    val parser = ChromePageAdapter()
-//    val skrape = Skrape(parser)
-//    skrape.request(page)
+private fun runChromeDriverSample(page: Page): String {
+    println("Run Chrome Driver sample…")
+
+    val parser = ChromePageAdapter()
+    val skrape = Skrape(parser)
+
+    return skrape.request(page).json()
 }

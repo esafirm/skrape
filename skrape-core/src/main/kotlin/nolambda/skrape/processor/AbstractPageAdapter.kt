@@ -10,10 +10,16 @@ abstract class AbstractPageAdapter<ELEMENT, R, out T : SkrapeResult> : PageAdapt
     val formatterManager: ValueFormatterManager<ELEMENT, R> by lazy { ValueFormatterManager<ELEMENT, R>() }
 
     override fun adapt(page: Page): T {
+        onStart()
         val requested = requestPage(page)
         val results = internalProcessPage(page, requested)
-        return onHandleResult(page, results)
+        val result = onHandleResult(page, results)
+        onEnd()
+        return result
     }
+
+    open fun onStart() {}
+    open fun onEnd() {}
 
     private fun internalProcessPage(page: Page, element: ELEMENT): List<R> = with(page) {
         evaluate()
@@ -24,7 +30,7 @@ abstract class AbstractPageAdapter<ELEMENT, R, out T : SkrapeResult> : PageAdapt
 
     abstract fun onHandleResult(page: Page, results: List<R>): T
 
-    internal fun processChildren(
+    private fun processChildren(
         page: Page,
         element: ELEMENT
     ): List<R> = with(page) {
@@ -39,7 +45,7 @@ abstract class AbstractPageAdapter<ELEMENT, R, out T : SkrapeResult> : PageAdapt
 
     abstract fun processAttr(attr: Attr, element: ELEMENT): R
 
-    internal fun processValue(value: Value<*>, element: ELEMENT): R = with(value) {
+    private fun processValue(value: Value<*>, element: ELEMENT): R = with(value) {
         return formatterManager.format(value, element)
     }
 
