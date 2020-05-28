@@ -28,7 +28,7 @@ typealias ElementBody = ParentElement.() -> Unit
 /* > Parent Elements */
 /* --------------------------------------------------- */
 
-class Page(
+data class Page(
     val pageInfo: PageInfo,
     override var name: String = "",
     @Transient override val body: ElementBody
@@ -37,49 +37,40 @@ class Page(
     constructor(path: String, baseUrl: String = "", body: ElementBody) : this(PageInfo(path, baseUrl), body = body)
     constructor(file: File, baseUrl: String = "", body: ElementBody) : this(file.path, baseUrl, body)
 
-    override fun toString(): String = "Page(pageInfo=$pageInfo, name='$name', body=$body)"
-
     override var type: String = ElementName.ELEMENT_PAGE
 }
 
 
-class Query(
+data class Query(
     val cssSelector: String,
     override var name: String = "",
     @Transient override val body: ElementBody
 ) : ParentElement() {
     override var type: String = ElementName.ELEMENT_QUERY
-    override fun toString(): String = "Query(name='$name', cssSelector='$cssSelector')"
 }
 
-class Container(
+data class Container(
     override var name: String = "",
     @Transient override val body: ElementBody
 ) : ParentElement() {
     override var type: String = ElementName.ELEMENT_CONTAINER
-    override fun toString(): String = "Container(name='$name', body=$body)"
 }
 
 /* --------------------------------------------------- */
 /* > Child Elements */
 /* --------------------------------------------------- */
 
-class Attr(
+data class Attr(
     override var name: String = "",
     val attrName: String
 ) : SkrapeElemenet() {
     override var type: String = ElementName.ELEMENT_ATTR
-    override fun toString(): String = "Attr(name='$name', attrName='$attrName')"
 }
 
-class Value<T : Any>(
+data class Value<T : Any>(
     override var name: String = "",
     @Transient val clazz: Class<T>,
     val query: String = ""
-    ) : SkrapeElemenet() {
+) : SkrapeElemenet() {
     override var type: String = ElementName.ELEMENT_VALUE
-    override fun toString(): String {
-        return "Value(name='$name', clazz=$clazz, query='$query')"
-    }
-
 }
