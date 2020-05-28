@@ -10,7 +10,7 @@ class Skrape<out T : SkrapeResult>(
     private val enableLog: Boolean = false
 ) {
 
-    fun request(page: Page): T {
+    fun request(page: Page, args: Map<String, String> = emptyMap()): T {
         log { "Requesting $this" }
         return parser.adapt(page).also {
             log { "Result $it" }
