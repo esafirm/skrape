@@ -39,9 +39,16 @@ class PlaceholderTransformer(
         val results = PLACEHOLDER_PATTERN.findAll(this)
         if (results.count() == 0) return this
 
-        return results.fold(this) { acc, result ->
+        val finalResult = results.fold(this) { acc, result ->
             val capturedKey = result.groupValues[1]
             args[capturedKey]?.let { acc.replace("{{${capturedKey}}}", it) } ?: acc
         }
+
+        // Check if there's un-fulfilled placeholder
+        if (PLACEHOLDER_PATTERN.matches(finalResult)) {
+            throw IllegalArgumentException("Unfulfilled placeholder on: $this")
+        }
+
+        return finalResult
     }
 }
