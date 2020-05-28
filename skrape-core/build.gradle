@@ -17,10 +17,10 @@ artifacts {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     /* JSON */
-    api 'com.github.salomonbrys.kotson:kotson:2.5.0'
+    compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
 
     /* --------------------------------------------------- */
     /* > Test */

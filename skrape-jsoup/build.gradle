@@ -17,10 +17,10 @@ compileTestKotlin {
 }
 
 dependencies {
-    implementation project(':skrape-core')
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile project(':skrape-core')
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    api 'org.jsoup:jsoup:1.10.3'
+    compile 'org.jsoup:jsoup:1.10.3'
 
     /* --------------------------------------------------- */
     /* > Test */
