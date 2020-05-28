@@ -1,7 +1,6 @@
 package nolambda.skrape.transformer
 
-import nolambda.skrape.nodes.Page
-import nolambda.skrape.nodes.evaluate
+import nolambda.skrape.nodes.*
 
 class PlaceholderTransformer(
     private val args: Map<String, String>
@@ -15,12 +14,28 @@ class PlaceholderTransformer(
         page.evaluate()
 
         val pageInfo = page.pageInfo
-        val page = page.copy(pageInfo = pageInfo.copy(path = pageInfo.path.replacePlaceholder(args)))
-
-        return page
+        return page.copy(pageInfo = pageInfo.copy(path = pageInfo.path.replacePlaceholder())).apply {
+            setNewChildren(transformChildren(page.children))
+        }
     }
 
-    private fun String.replacePlaceholder(args: Map<String, String>): String {
+    private fun transformChildren(children: List<SkrapeElemenet>): List<SkrapeElemenet> {
+        return children.map {
+            when (it) {
+                is Query -> it.copy(cssSelector = it.cssSelector.replacePlaceholder()).also { query ->
+                    query.setNewChildren(transformChildren(it.children))
+                }
+                else -> it
+            }
+        }
+    }
+
+    private fun ParentElement.setNewChildren(newChildren: List<SkrapeElemenet>) {
+        children.clear()
+        children.addAll(newChildren)
+    }
+
+    private fun String.replacePlaceholder(): String {
         val results = PLACEHOLDER_PATTERN.findAll(this)
         if (results.count() == 0) return this
 
