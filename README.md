@@ -2,6 +2,14 @@
 
 Turn your HTML to JSON with graph based Kotlin DSL 💪
 
+# Support Me!
+
+I would make myself more commited to this repo and OSS works in general.
+
+Would you help me achieving this goals?
+
+<a href='https://ko-fi.com/M4M41RRE0' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi4.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
 ## Getting Started
 
 Define your query in type-safe Kotlin DSL  
