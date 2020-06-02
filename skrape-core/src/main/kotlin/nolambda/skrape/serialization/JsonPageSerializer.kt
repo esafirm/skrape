@@ -42,7 +42,7 @@ class JsonPageSerializer(private val gson: Gson = Gson()) : PageSerializer<Strin
     private fun <T : SkrapeElemenet> createParentElement(clazz: Class<T>, content: JsonElement): SkrapeElemenet {
         return when (clazz) {
             Query::class.java -> Query(
-                content[PageSerializer.KEY_CSS_SELECTOR].asString,
+                content[PageSerializer.KEY_SELECTOR].asString,
                 content.getName(),
                 content.createBody()
             )

@@ -35,12 +35,14 @@ class JsonPageSeriliazerSpec : StringSpec({
           "children": [
             {
               "type": "query",
-              "cssSelector": "span.score",
+              "selector": "span.score",
               "name": "athing",
               "children": [
                 {
                   "type": "value",
-                  "name": "score"
+                  "name": "score",
+                  "valueType": "string",
+                  "selector": ""
                 },
                 {
                   "type": "container",
@@ -57,12 +59,14 @@ class JsonPageSeriliazerSpec : StringSpec({
             },
             {
               "type": "query",
-              "cssSelector": "td a.storylink",
+              "selector": "td a.storylink",
               "name": "items",
               "children": [
                 {
                   "type": "value",
-                  "name": "text"
+                  "name": "text",
+                  "valueType": "string",
+                  "selector": ""
                 },
                 {
                   "type": "attr",
@@ -93,6 +97,9 @@ class JsonPageSeriliazerSpec : StringSpec({
         result.pageInfo.path shouldBe "https://news.ycombinator.com/"
 
         (result.children.first() as ParentElement).children.size shouldBe 2
+
+        val value = (result.children.first() as ParentElement).children.first() as Value
+        value.valueType shouldBe Value.TYPE_STRING
 
         serializer.serialize(result) shouldBe pageString
     }

@@ -9,7 +9,7 @@ interface PageSerializer<TARGET> {
         const val KEY_PAGE_INFO = "pageInfo"
         const val KEY_NAME = "name"
         const val KEY_TYPE= "type"
-        const val KEY_CSS_SELECTOR = "cssSelector"
+        const val KEY_SELECTOR = "selector"
     }
 
     fun serialize(page: Page): TARGET
