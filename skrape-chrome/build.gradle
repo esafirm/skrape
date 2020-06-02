@@ -13,6 +13,13 @@ dependencies {
     compile project(':skrape-core')
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     compile 'org.seleniumhq.selenium:selenium-java:3.8.1'
+
+    /* --------------------------------------------------- */
+    /* > Test */
+    /* --------------------------------------------------- */
+
+    testImplementation 'io.kotlintest:kotlintest:2.0.3'
+    testImplementation 'junit:junit:4.12'
 }
 
 compileKotlin {
