@@ -23,7 +23,7 @@ class JsoupValueFormatter : ValueFormatter<Element, JsoupParserResult> {
 
     override fun format(value: Value, element: Element): JsoupParserResult = with(value) {
         val text = extractValue(value.selector, element)
-        name to when (value.type) {
+        name to when (value.valueType) {
             Value.TYPE_BOOL -> text.toBoolean().toJson()
             Value.TYPE_INT -> text.toInt().toJson()
             else -> text.toJson()

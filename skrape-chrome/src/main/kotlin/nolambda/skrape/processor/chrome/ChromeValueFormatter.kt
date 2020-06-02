@@ -9,7 +9,7 @@ class ChromeValueFormatter(
 ) : ValueFormatter<ChromeElement, ChromeParserResult> {
 
     override fun isForType(value: Value): Boolean {
-        return value.type.let {
+        return value.valueType.let {
             it == Value.TYPE_STRING || it == Value.TYPE_INT || it == Value.TYPE_BOOL
         }
     }
@@ -24,7 +24,7 @@ class ChromeValueFormatter(
 
     override fun format(value: Value, element: ChromeElement): ChromeParserResult = with(value) {
         val text = extractValue(value.selector, element)
-        name to when (value.type) {
+        name to when (value.valueType) {
             Value.TYPE_BOOL -> text.toBoolean().toJson()
             Value.TYPE_INT -> text.toInt().toJson()
             else -> text.toJson()
