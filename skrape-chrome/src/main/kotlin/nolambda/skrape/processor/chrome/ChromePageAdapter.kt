@@ -50,7 +50,7 @@ class ChromePageAdapter(
     }
 
     override fun processQuery(query: Query, element: ChromeElement): ChromeParserResult = with(query) {
-        val children = element.findElWait(waiter, cssSelector).map { webEl ->
+        val children = element.findElWait(waiter, selector).map { webEl ->
             jsonObject(children.map {
                 processElement(it, ChromeElement.Component(webEl))
             })

@@ -7,9 +7,9 @@ import org.jsoup.nodes.Element
 
 class JsoupValueFormatter : ValueFormatter<Element, JsoupParserResult> {
 
-    override fun isForType(value: Value<*>): Boolean {
-        return value.clazz.let {
-            it == Boolean::class.java || it == Int::class.java || it == String::class.java
+    override fun isForType(value: Value): Boolean {
+        return value.valueType.let {
+            it == Value.TYPE_STRING || it == Value.TYPE_INT || it == Value.TYPE_BOOL
         }
     }
 
@@ -21,11 +21,11 @@ class JsoupValueFormatter : ValueFormatter<Element, JsoupParserResult> {
         }
     }
 
-    override fun format(value: Value<*>, element: Element): JsoupParserResult = with(value) {
-        val text = extractValue(value.query, element)
-        name to when (value.clazz) {
-            Boolean::class.java -> text.toBoolean().toJson()
-            Int::class.java -> text.toInt().toJson()
+    override fun format(value: Value, element: Element): JsoupParserResult = with(value) {
+        val text = extractValue(value.selector, element)
+        name to when (value.type) {
+            Value.TYPE_BOOL -> text.toBoolean().toJson()
+            Value.TYPE_INT -> text.toInt().toJson()
             else -> text.toJson()
         }
     }

@@ -22,7 +22,7 @@ class PlaceholderTransformer(
     private fun transformChildren(children: List<SkrapeElemenet>): List<SkrapeElemenet> {
         return children.map {
             when (it) {
-                is Query -> it.copy(cssSelector = it.cssSelector.replacePlaceholder()).also { query ->
+                is Query -> it.copy(selector = it.selector.replacePlaceholder()).also { query ->
                     query.setNewChildren(transformChildren(it.children))
                 }
                 else -> it

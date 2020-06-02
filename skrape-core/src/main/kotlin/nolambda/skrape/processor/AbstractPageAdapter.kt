@@ -45,7 +45,7 @@ abstract class AbstractPageAdapter<ELEMENT, R, out T : SkrapeResult> : PageAdapt
 
     abstract fun processAttr(attr: Attr, element: ELEMENT): R
 
-    private fun processValue(value: Value<*>, element: ELEMENT): R = with(value) {
+    private fun processValue(value: Value, element: ELEMENT): R = with(value) {
         return formatterManager.format(value, element)
     }
 
@@ -54,7 +54,7 @@ abstract class AbstractPageAdapter<ELEMENT, R, out T : SkrapeResult> : PageAdapt
 
         return when (skrapeElemenet) {
             is Query -> processQuery(skrapeElemenet, element)
-            is Value<*> -> processValue(skrapeElemenet, element)
+            is Value -> processValue(skrapeElemenet, element)
             is Attr -> processAttr(skrapeElemenet, element)
             is Container -> processContainer(skrapeElemenet, element)
             else -> throw IllegalStateException("Skrape Element undefined")

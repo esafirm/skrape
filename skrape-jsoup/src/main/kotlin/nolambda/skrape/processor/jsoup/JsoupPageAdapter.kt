@@ -26,7 +26,7 @@ class JsoupPageAdapter(
     }
 
     override fun processQuery(query: Query, element: Element): JsoupParserResult = with(query) {
-        val children = element.select(cssSelector).map { jsoupElement ->
+        val children = element.select(selector).map { jsoupElement ->
             jsonObject(children.map {
                 processElement(it, jsoupElement)
             })
