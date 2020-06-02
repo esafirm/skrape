@@ -1,13 +1,11 @@
 package nolambda.skrape.nodes
 
-import kotlin.reflect.KClass
-
 /* --------------------------------------------------- */
 /* > Parent */
 /* --------------------------------------------------- */
 
 fun ParentElement.query(cssSelector: String, body: ElementBody): ParentElement =
-    Query(cssSelector = cssSelector, body = body).apply {
+    Query(selector = cssSelector, body = body).apply {
         postCreate(this@query, this)
     }
 
@@ -25,14 +23,14 @@ fun ParentElement.attr(attrName: String): SkrapeElemenet =
         postCreate(this@attr, this)
     }
 
-private fun ParentElement.createValueElement(clazz: KClass<*>, query: String): SkrapeElemenet =
-    Value(clazz = clazz.java, query = query).apply {
+private fun ParentElement.createValueElement(type: ValueType, query: String): SkrapeElemenet =
+    Value(valueType = type, selector = query).apply {
         postCreate(this@createValueElement, this)
     }
 
-fun ParentElement.text(query: String = ""): SkrapeElemenet = createValueElement(String::class, query)
-fun ParentElement.bool(query: String = ""): SkrapeElemenet = createValueElement(Boolean::class, query)
-fun ParentElement.int(query: String = ""): SkrapeElemenet = createValueElement(Int::class, query)
+fun ParentElement.text(query: String = ""): SkrapeElemenet = createValueElement(Value.TYPE_STRING, query)
+fun ParentElement.bool(query: String = ""): SkrapeElemenet = createValueElement(Value.TYPE_BOOL, query)
+fun ParentElement.int(query: String = ""): SkrapeElemenet = createValueElement(Value.TYPE_INT, query)
 
 internal fun postCreate(parent: ParentElement, child: SkrapeElemenet) {
     parent.children.add(child)

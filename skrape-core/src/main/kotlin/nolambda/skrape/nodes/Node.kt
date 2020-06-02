@@ -42,7 +42,7 @@ data class Page(
 
 
 data class Query(
-    val cssSelector: String,
+    val selector: String,
     override var name: String = "",
     @Transient override val body: ElementBody
 ) : ParentElement() {
@@ -67,10 +67,19 @@ data class Attr(
     override var type: String = ElementName.ELEMENT_ATTR
 }
 
-data class Value<T : Any>(
+typealias ValueType = String
+
+data class Value(
     override var name: String = "",
-    @Transient val clazz: Class<T>,
-    val query: String = ""
+    val valueType: ValueType = TYPE_STRING,
+    val selector: String = ""
 ) : SkrapeElemenet() {
+
+    companion object {
+        const val TYPE_STRING: ValueType = "string"
+        const val TYPE_BOOL: ValueType = "bool"
+        const val TYPE_INT: ValueType = "int"
+    }
+
     override var type: String = ElementName.ELEMENT_VALUE
 }

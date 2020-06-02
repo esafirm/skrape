@@ -8,9 +8,9 @@ class ChromeValueFormatter(
     private val wait: ChromeWaiter
 ) : ValueFormatter<ChromeElement, ChromeParserResult> {
 
-    override fun isForType(value: Value<*>): Boolean {
-        return value.clazz.let {
-            it == Boolean::class.java || it == Int::class.java || it == String::class.java
+    override fun isForType(value: Value): Boolean {
+        return value.type.let {
+            it == Value.TYPE_STRING || it == Value.TYPE_INT || it == Value.TYPE_BOOL
         }
     }
 
@@ -22,11 +22,11 @@ class ChromeValueFormatter(
         }
     }
 
-    override fun format(value: Value<*>, element: ChromeElement): ChromeParserResult = with(value) {
-        val text = extractValue(value.query, element)
-        name to when (value.clazz) {
-            Boolean::class.java -> text.toBoolean().toJson()
-            Int::class.java -> text.toInt().toJson()
+    override fun format(value: Value, element: ChromeElement): ChromeParserResult = with(value) {
+        val text = extractValue(value.selector, element)
+        name to when (value.type) {
+            Value.TYPE_BOOL -> text.toBoolean().toJson()
+            Value.TYPE_INT -> text.toInt().toJson()
             else -> text.toJson()
         }
     }

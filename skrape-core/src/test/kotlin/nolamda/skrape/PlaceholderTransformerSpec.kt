@@ -35,7 +35,7 @@ class PlaceholderTransformerSpec : StringSpec({
         val expectedSelector = "td tweet"
 
         val query = resultPage.children.first() as Query
-        query.cssSelector shouldBe expectedSelector
+        query.selector shouldBe expectedSelector
     }
 
     "it should throw if there's unfulfilled" {

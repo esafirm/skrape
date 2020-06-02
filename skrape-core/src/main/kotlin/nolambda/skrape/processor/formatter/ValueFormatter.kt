@@ -6,6 +6,6 @@ interface ValueFormatter<in E, out R> {
     /**
      * Check if the formatter can handle the value
      */
-    fun isForType(value: Value<*>): Boolean
-    fun format(value: Value<*>, element: E): R
+    fun isForType(value: Value): Boolean
+    fun format(value: Value, element: E): R
 }

@@ -26,6 +26,10 @@ class JsonSpec : StringSpec({
         }
     }
 
+    val thirdPage = Page("https://twitter.com") {
+        "title" to text("td.a")
+    }
+
     val serializer = JsonPageSerializer(
         GsonBuilder()
             .setPrettyPrinting()
@@ -43,5 +47,9 @@ class JsonSpec : StringSpec({
             referrer("google.com")
         }, false)
         println(skrape.request(secondPage).json())
+    }
+
+    "generate thrid json" {
+        println(serializer.serialize(thirdPage))
     }
 })
