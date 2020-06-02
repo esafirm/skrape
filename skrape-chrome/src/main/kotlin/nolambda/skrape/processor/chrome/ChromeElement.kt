@@ -16,6 +16,12 @@ internal fun ChromeElement.findEl(selector: String): List<WebElement> {
     }
 }
 
+internal fun ChromeElement.findElWait(wait: ChromeWaiter, selector: String): List<WebElement> {
+    val isDisplayed = { findEl(selector).firstOrNull()?.isDisplayed ?: false }
+    wait.until(isDisplayed)
+    return findEl(selector)
+}
+
 internal fun ChromeElement.attr(attrName: String): String {
     return when (this) {
         is ChromeElement.Component -> webElement.getAttribute(attrName)

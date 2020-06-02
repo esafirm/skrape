@@ -4,6 +4,8 @@ import nolambda.skrape.Skrape
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.chrome.ChromePageAdapter
 import nolambda.skrape.processor.jsoup.JsoupPageAdapter
+import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeOptions
 
 fun main() {
     val page = Page("https://news.ycombinator.com/") {
@@ -15,7 +17,11 @@ fun main() {
             "link" to attr("href")
         }
     }
-    println(runChromeDriverSample(page))
+
+    val twitterPage = Page("https://twitter.com/lynxluna") {
+        "bio" to text("main > div > div > div > div > div > div > div > div > div:nth-child(1) > div > div:nth-child(3) > div")
+    }
+    println(runChromeDriverSample(twitterPage))
 }
 
 private fun runJsoupSample(page: Page): String {
@@ -36,7 +42,11 @@ private fun runJsoupSample(page: Page): String {
 private fun runChromeDriverSample(page: Page): String {
     println("Run Chrome Driver sample…")
 
-    val parser = ChromePageAdapter()
+    val parser = ChromePageAdapter {
+        ChromeDriver(ChromeOptions().apply {
+            addArguments("--headless")
+        })
+    }
     val skrape = Skrape(parser)
 
     return skrape.request(page).json()

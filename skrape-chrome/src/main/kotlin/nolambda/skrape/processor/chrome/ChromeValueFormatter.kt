@@ -4,7 +4,9 @@ import com.github.salomonbrys.kotson.toJson
 import nolambda.skrape.nodes.Value
 import nolambda.skrape.processor.formatter.ValueFormatter
 
-class ChromeValueFormatter : ValueFormatter<ChromeElement, ChromeParserResult> {
+class ChromeValueFormatter(
+    private val wait: ChromeWaiter
+) : ValueFormatter<ChromeElement, ChromeParserResult> {
 
     override fun isForType(value: Value<*>): Boolean {
         return value.clazz.let {
@@ -16,7 +18,7 @@ class ChromeValueFormatter : ValueFormatter<ChromeElement, ChromeParserResult> {
         return if (query.isBlank()) {
             element.text()
         } else {
-            element.findEl(query).first().text
+            element.findElWait(wait, query).first().text
         }
     }
 
