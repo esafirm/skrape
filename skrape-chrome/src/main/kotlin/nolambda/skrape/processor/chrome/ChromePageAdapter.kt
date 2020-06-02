@@ -13,17 +13,31 @@ import nolambda.skrape.processor.formatter.addFormatter
 import nolambda.skrape.result.QuerySkrapeResult
 import nolambda.skrape.result.SkrapeResult
 import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.support.ui.WebDriverWait
 
 typealias ChromeParserResult = Pair<String, JsonElement>
 
 class ChromePageAdapter(
+    private val waitTimeInSecond: Long = DEFAULT_WAIT_TIME,
     driverFactory: () -> ChromeDriver = { ChromeDriver() }
 ) : AbstractPageAdapter<ChromeElement, ChromeParserResult, SkrapeResult>() {
 
+    companion object {
+        private const val DEFAULT_WAIT_TIME = 3L
+        const val NO_WAIT_TIME = 0L
+    }
+
     private val driver by lazy(driverFactory)
+    private val waiter by lazy {
+        if (waitTimeInSecond == NO_WAIT_TIME) {
+            NoWait
+        } else {
+            WebChromeWaiter(WebDriverWait(driver, waitTimeInSecond))
+        }
+    }
 
     init {
-        addFormatter(ChromeValueFormatter())
+        addFormatter(ChromeValueFormatter(waiter))
     }
 
     override fun requestPage(page: Page): ChromeElement {
@@ -36,7 +50,7 @@ class ChromePageAdapter(
     }
 
     override fun processQuery(query: Query, element: ChromeElement): ChromeParserResult = with(query) {
-        val children = element.findEl(cssSelector).map { webEl ->
+        val children = element.findElWait(waiter, cssSelector).map { webEl ->
             jsonObject(children.map {
                 processElement(it, ChromeElement.Component(webEl))
             })
