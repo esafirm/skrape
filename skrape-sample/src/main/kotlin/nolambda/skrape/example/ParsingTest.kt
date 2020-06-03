@@ -39,14 +39,17 @@ private fun runJsoupSample(page: Page): String {
     return skrape.request(page).json()
 }
 
-private fun runChromeDriverSample(page: Page): String {
-    println("Run Chrome Driver sample…")
-
-    val parser = ChromePageAdapter {
+private val parser by lazy {
+    ChromePageAdapter {
         ChromeDriver(ChromeOptions().apply {
             addArguments("--headless")
         })
     }
+}
+
+private fun runChromeDriverSample(page: Page): String {
+    println("Run Chrome Driver sample…")
+
     val skrape = Skrape(parser)
 
     return skrape.request(page).json()

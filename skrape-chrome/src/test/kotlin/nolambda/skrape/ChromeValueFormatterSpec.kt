@@ -7,7 +7,7 @@ import nolambda.skrape.processor.chrome.ChromeValueFormatter
 import nolambda.skrape.processor.chrome.NoWait
 
 class ChromeValueFormatterSpec : StringSpec({
-    val formatter = ChromeValueFormatter(NoWait)
+    val formatter = ChromeValueFormatter { NoWait }
     val value = Value(
         name = "value",
         valueType = Value.TYPE_STRING,
