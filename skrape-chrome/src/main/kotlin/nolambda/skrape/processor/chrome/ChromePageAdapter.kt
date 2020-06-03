@@ -19,7 +19,7 @@ typealias ChromeParserResult = Pair<String, JsonElement>
 
 class ChromePageAdapter(
     private val waitTimeInSecond: Long = DEFAULT_WAIT_TIME,
-    driverFactory: () -> ChromeDriver = { ChromeDriver() }
+    private val driverFactory: () -> ChromeDriver = { ChromeDriver() }
 ) : AbstractPageAdapter<ChromeElement, ChromeParserResult, SkrapeResult>() {
 
     companion object {
@@ -27,22 +27,36 @@ class ChromePageAdapter(
         const val NO_WAIT_TIME = 0L
     }
 
-    private val driver by lazy(driverFactory)
-    private val waiter by lazy {
-        if (waitTimeInSecond == NO_WAIT_TIME) {
+    private var driver: ChromeDriver? = null
+    private var waiter: ChromeWaiter? = null
+
+    init {
+        addFormatter(ChromeValueFormatter { waiter!! })
+    }
+
+    private fun createWaiter(): ChromeWaiter {
+        return if (waitTimeInSecond == NO_WAIT_TIME) {
             NoWait
         } else {
             WebChromeWaiter(WebDriverWait(driver, waitTimeInSecond))
         }
     }
 
-    init {
-        addFormatter(ChromeValueFormatter(waiter))
+    private fun getDriver(): ChromeDriver {
+        if (driver == null) {
+            driver = driverFactory()
+        }
+        if (waiter == null) {
+            waiter = createWaiter()
+        }
+        return driver!!
     }
 
     override fun requestPage(page: Page): ChromeElement {
-        driver.get(page.pageInfo.path)
-        return ChromeElement.Driver(driver)
+        val currentDriver = getDriver().apply {
+            get(page.pageInfo.path)
+        }
+        return ChromeElement.Driver(currentDriver)
     }
 
     override fun onHandleResult(page: Page, results: List<ChromeParserResult>): SkrapeResult {
@@ -50,7 +64,7 @@ class ChromePageAdapter(
     }
 
     override fun processQuery(query: Query, element: ChromeElement): ChromeParserResult = with(query) {
-        val children = element.findElWait(waiter, selector).map { webEl ->
+        val children = element.findElWait(checkNotNull(waiter), selector).map { webEl ->
             jsonObject(children.map {
                 processElement(it, ChromeElement.Component(webEl))
             })
@@ -70,6 +84,8 @@ class ChromePageAdapter(
     }
 
     override fun onEnd() {
-        driver.close()
+        driver?.quit()
+        driver = null
+        waiter = null
     }
 }

@@ -5,7 +5,7 @@ import nolambda.skrape.nodes.Value
 import nolambda.skrape.processor.formatter.ValueFormatter
 
 class ChromeValueFormatter(
-    private val wait: ChromeWaiter
+    private val waiter: () -> ChromeWaiter
 ) : ValueFormatter<ChromeElement, ChromeParserResult> {
 
     override fun isForType(value: Value): Boolean {
@@ -18,7 +18,7 @@ class ChromeValueFormatter(
         return if (query.isBlank()) {
             element.text()
         } else {
-            element.findElWait(wait, query).first().text
+            element.findElWait(waiter(), query).first().text
         }
     }
 
