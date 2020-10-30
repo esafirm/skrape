@@ -60,6 +60,9 @@ data class Container(
 /* > Child Elements */
 /* --------------------------------------------------- */
 
+/**
+ * Attr fetch the [attrName] on the element
+ */
 data class Attr(
     override var name: String = "",
     val attrName: String
@@ -69,6 +72,11 @@ data class Attr(
 
 typealias ValueType = String
 
+/**
+ * Value should process [query] inside the parent element if exist
+ * if not, it will fetch text from the parent element instead
+ * after that it will convert the data to expected type
+ */
 data class Value(
     override var name: String = "",
     val valueType: ValueType = TYPE_STRING,

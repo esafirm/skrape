@@ -22,6 +22,7 @@ fun main() {
         "bio" to text("main > div > div > div > div > div > div > div > div > div:nth-child(1) > div > div:nth-child(3) > div")
     }
     println(runChromeDriverSample(twitterPage))
+    println(runChromeDriverSample(page))
 }
 
 private fun runJsoupSample(page: Page): String {

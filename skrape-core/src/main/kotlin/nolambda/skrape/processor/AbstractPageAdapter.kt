@@ -45,9 +45,8 @@ abstract class AbstractPageAdapter<ELEMENT, R, out T : SkrapeResult> : PageAdapt
 
     abstract fun processAttr(attr: Attr, element: ELEMENT): R
 
-    private fun processValue(value: Value, element: ELEMENT): R = with(value) {
-        return formatterManager.format(value, element)
-    }
+    private fun processValue(value: Value, element: ELEMENT): R =
+        formatterManager.format(value, element)
 
     protected fun processElement(skrapeElemenet: SkrapeElemenet, element: ELEMENT): R {
         SkrapeLogger.log("$skrapeElemenet")
