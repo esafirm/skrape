@@ -1,9 +1,9 @@
 package nolambda.skrape.processor.chrome
 
-import com.github.salomonbrys.kotson.jsonArray
-import com.github.salomonbrys.kotson.jsonObject
-import com.github.salomonbrys.kotson.toJson
-import com.google.gson.JsonElement
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import nolambda.skrape.nodes.Attr
 import nolambda.skrape.nodes.Container
 import nolambda.skrape.nodes.Page
@@ -60,27 +60,27 @@ class ChromePageAdapter(
     }
 
     override fun onHandleResult(page: Page, results: List<ChromeParserResult>): SkrapeResult {
-        return QuerySkrapeResult(jsonObject(results))
+        return QuerySkrapeResult(JsonObject(results.toMap()))
     }
 
     override fun processQuery(query: Query, element: ChromeElement): ChromeParserResult = with(query) {
         val children = element.findElWait(checkNotNull(waiter), selector).map { webEl ->
-            jsonObject(children.map {
+            JsonObject(children.map {
                 processElement(it, ChromeElement.Component(webEl))
-            })
+            }.toMap())
         }
-        name to jsonArray(children)
+        name to JsonArray(children)
     }
 
     override fun processContainer(container: Container, element: ChromeElement): ChromeParserResult = with(container) {
         val children = children.map {
             processElement(it, element)
         }
-        name to jsonObject(children)
+        name to JsonObject(children.toMap())
     }
 
     override fun processAttr(attr: Attr, element: ChromeElement): ChromeParserResult = with(attr) {
-        name to element.attr(attrName).toJson()
+        name to JsonPrimitive(element.attr(attrName))
     }
 
     override fun onEnd() {

@@ -1,6 +1,6 @@
 package nolambda.skrape.processor.chrome
 
-import com.github.salomonbrys.kotson.toJson
+import kotlinx.serialization.json.JsonPrimitive
 import nolambda.skrape.nodes.Value
 import nolambda.skrape.processor.formatter.ValueFormatter
 
@@ -25,9 +25,9 @@ class ChromeValueFormatter(
     override fun format(value: Value, element: ChromeElement): ChromeParserResult = with(value) {
         val text = extractValue(value.selector, element)
         name to when (value.valueType) {
-            Value.TYPE_BOOL -> text.toBoolean().toJson()
-            Value.TYPE_INT -> text.toInt().toJson()
-            else -> text.toJson()
+            Value.TYPE_BOOL -> JsonPrimitive(text.toBoolean())
+            Value.TYPE_INT -> JsonPrimitive(text.toBoolean())
+            else -> JsonPrimitive(text)
         }
     }
 }

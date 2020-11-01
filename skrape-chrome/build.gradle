@@ -1,5 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version"
 }
 
 group 'nolambda.stream'
@@ -10,9 +11,9 @@ repositories {
 }
 
 dependencies {
-    compile project(':skrape-core')
-    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    compile 'org.seleniumhq.selenium:selenium-java:3.8.1'
+    implementation project(':skrape-core')
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.seleniumhq.selenium:selenium-java:3.8.1'
 
     /* --------------------------------------------------- */
     /* > Test */
