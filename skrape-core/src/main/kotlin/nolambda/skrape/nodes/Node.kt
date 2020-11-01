@@ -1,5 +1,8 @@
 package nolambda.skrape.nodes
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.io.File
 
 object ElementName {
@@ -12,12 +15,13 @@ object ElementName {
 
 interface Node {
     var name: String
-    var type: String
 }
 
+@Serializable
 sealed class SkrapeElemenet : Node
 
-abstract class ParentElement : SkrapeElemenet() {
+@Serializable
+sealed class ParentElement : SkrapeElemenet() {
     abstract val body: ElementBody
     val children = arrayListOf<SkrapeElemenet>()
 }
@@ -28,33 +32,32 @@ typealias ElementBody = ParentElement.() -> Unit
 /* > Parent Elements */
 /* --------------------------------------------------- */
 
+@Serializable
+@SerialName(ElementName.ELEMENT_PAGE)
 data class Page(
     val pageInfo: PageInfo,
     override var name: String = "",
-    @Transient override val body: ElementBody
+    @Transient override val body: ElementBody = {}
 ) : ParentElement() {
 
     constructor(path: String, baseUrl: String = "", body: ElementBody) : this(PageInfo(path, baseUrl), body = body)
     constructor(file: File, baseUrl: String = "", body: ElementBody) : this(file.path, baseUrl, body)
-
-    override var type: String = ElementName.ELEMENT_PAGE
 }
 
-
+@Serializable
+@SerialName(ElementName.ELEMENT_QUERY)
 data class Query(
     val selector: String,
     override var name: String = "",
-    @Transient override val body: ElementBody
-) : ParentElement() {
-    override var type: String = ElementName.ELEMENT_QUERY
-}
+    @Transient override val body: ElementBody = {}
+) : ParentElement()
 
+@Serializable
+@SerialName(ElementName.ELEMENT_CONTAINER)
 data class Container(
     override var name: String = "",
-    @Transient override val body: ElementBody
-) : ParentElement() {
-    override var type: String = ElementName.ELEMENT_CONTAINER
-}
+    @Transient override val body: ElementBody = {}
+) : ParentElement()
 
 /* --------------------------------------------------- */
 /* > Child Elements */
@@ -63,12 +66,12 @@ data class Container(
 /**
  * Attr fetch the [attrName] on the element
  */
+@Serializable
+@SerialName(ElementName.ELEMENT_ATTR)
 data class Attr(
     override var name: String = "",
     val attrName: String
-) : SkrapeElemenet() {
-    override var type: String = ElementName.ELEMENT_ATTR
-}
+) : SkrapeElemenet()
 
 typealias ValueType = String
 
@@ -77,6 +80,8 @@ typealias ValueType = String
  * if not, it will fetch text from the parent element instead
  * after that it will convert the data to expected type
  */
+@Serializable
+@SerialName(ElementName.ELEMENT_VALUE)
 data class Value(
     override var name: String = "",
     val valueType: ValueType = TYPE_STRING,
@@ -88,6 +93,4 @@ data class Value(
         const val TYPE_BOOL: ValueType = "bool"
         const val TYPE_INT: ValueType = "int"
     }
-
-    override var type: String = ElementName.ELEMENT_VALUE
 }

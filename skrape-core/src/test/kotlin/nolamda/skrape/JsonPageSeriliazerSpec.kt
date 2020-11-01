@@ -1,10 +1,8 @@
 package nolamda.skrape
 
-import com.google.gson.GsonBuilder
-import io.kotlintest.matchers.match
 import io.kotlintest.matchers.shouldBe
-import io.kotlintest.matchers.shouldHave
 import io.kotlintest.specs.StringSpec
+import kotlinx.serialization.json.Json
 import nolambda.skrape.nodes.*
 import nolambda.skrape.serialization.JsonPageSerializer
 
@@ -79,11 +77,10 @@ class JsonPageSeriliazerSpec : StringSpec({
         }
     """.trimIndent()
 
-    val gson = GsonBuilder()
-        .setPrettyPrinting()
-        .create()
-
-    val serializer = JsonPageSerializer(gson)
+    val serializer = JsonPageSerializer(Json {
+        prettyPrint = true
+        encodeDefaults = true
+    })
 
     "it serialize to string" {
         val result = serializer.serialize(page)
@@ -101,6 +98,9 @@ class JsonPageSeriliazerSpec : StringSpec({
         val value = (result.children.first() as ParentElement).children.first() as Value
         value.valueType shouldBe Value.TYPE_STRING
 
-        serializer.serialize(result) shouldBe pageString
+        val secondResult = serializer.deserialize(serializer.serialize(result))
+
+        secondResult.children.size shouldBe 2
+        secondResult.pageInfo.path shouldBe "https://news.ycombinator.com/"
     }
 })

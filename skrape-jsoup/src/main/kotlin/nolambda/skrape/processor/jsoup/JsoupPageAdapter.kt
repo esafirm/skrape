@@ -1,9 +1,9 @@
 package nolambda.skrape.processor.jsoup
 
-import com.github.salomonbrys.kotson.jsonArray
-import com.github.salomonbrys.kotson.jsonObject
-import com.github.salomonbrys.kotson.toJson
-import com.google.gson.JsonElement
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.AbstractPageAdapter
 import nolambda.skrape.processor.formatter.addFormatter
@@ -27,22 +27,22 @@ class JsoupPageAdapter(
 
     override fun processQuery(query: Query, element: Element): JsoupParserResult = with(query) {
         val children = element.select(selector).map { jsoupElement ->
-            jsonObject(children.map {
+            JsonObject(children.map {
                 processElement(it, jsoupElement)
-            })
+            }.toMap())
         }
-        name to jsonArray(children)
+        name to JsonArray(children)
     }
 
     override fun processContainer(container: Container, element: Element): JsoupParserResult = with(container) {
         val children = children.map {
             processElement(it, element)
         }
-        name to jsonObject(children)
+        name to JsonObject(children.toMap())
     }
 
     override fun processAttr(attr: Attr, element: Element): JsoupParserResult = with(attr) {
-        name to element.attr(attrName).toJson()
+        name to JsonPrimitive(element.attr(attrName))
     }
 
     override fun requestPage(page: Page): Element {
@@ -62,7 +62,7 @@ class JsoupPageAdapter(
         val json: JsonElement = if (page.isUselessContainer()) {
             results.map { it.second }.first()
         } else {
-            jsonObject(results)
+            JsonObject(results.toMap())
         }
         return QuerySkrapeResult(json)
     }

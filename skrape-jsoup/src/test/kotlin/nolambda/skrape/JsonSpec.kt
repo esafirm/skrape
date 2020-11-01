@@ -1,7 +1,7 @@
 package nolambda.skrape
 
-import com.google.gson.GsonBuilder
 import io.kotlintest.specs.StringSpec
+import kotlinx.serialization.json.Json
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.jsoup.JsoupPageAdapter
 import nolambda.skrape.serialization.JsonPageSerializer
@@ -31,9 +31,10 @@ class JsonSpec : StringSpec({
     }
 
     val serializer = JsonPageSerializer(
-        GsonBuilder()
-            .setPrettyPrinting()
-            .create()
+        Json {
+            prettyPrint = true
+            encodeDefaults = true
+        }
     )
 
     "generate json" {

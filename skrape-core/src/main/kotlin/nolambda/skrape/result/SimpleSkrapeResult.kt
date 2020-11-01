@@ -1,6 +1,6 @@
 package nolambda.skrape.result
 
-import com.google.gson.JsonElement
+import kotlinx.serialization.json.JsonElement
 
 open class SimpleSkrapeResult(private val jsonElement: JsonElement) : SkrapeResult {
 

@@ -1,11 +1,6 @@
 package nolambda.skrape.result
 
-import com.github.salomonbrys.kotson.jsonObject
-import com.github.salomonbrys.kotson.keys
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
+import kotlinx.serialization.json.*
 
 /**
  * This result support two kind of [JsonElement]
@@ -32,28 +27,32 @@ class QuerySkrapeResult(
     private val items: JsonArray by lazy {
         when (jsonElement) {
             is JsonArray -> jsonElement
-            is JsonObject -> jsonElement.getAsJsonArray(KEY_ITEMS)
+            is JsonObject -> jsonElement[KEY_ITEMS] as JsonArray
             else -> throw IllegalStateException("The json element must be one of JsonArray or JsonObject")
         }
     }
 
     val count by lazy {
-        jsonObject(
-            KEY_COUNT to items.size()
-        ).toString()
+        val map = mapOf(
+            KEY_COUNT to JsonPrimitive(items.size)
+        )
+        JsonObject(map).toString()
     }
 
-    fun at(index: Int) = items.get(index).toString()
+    fun at(index: Int) = items[index].toString()
 
     fun find(query: String): String {
         val (key, value) = query.split(QUERY_SEPARATOR).map { it.toLowerCase() }
         val filtered = items.filter {
             when (it) {
-                is JsonPrimitive -> key == KEY_FILTER && it.asString.contains(value)
+                is JsonPrimitive -> key == KEY_FILTER && it.contentOrNull?.contains(value) == true
                 is JsonObject -> {
-                    val itemKey = it.keys().first()
-                    val itemValue = it[itemKey].asString
-                    itemKey.contains(key) && itemValue.contains(value)
+                    val itemKey = it.keys.first()
+                    val itemValue = it[itemKey]
+
+                    if (itemValue is JsonPrimitive) {
+                        itemKey.contains(key) && itemValue.contentOrNull?.contains(value) == true
+                    } else false
                 }
                 else -> false
             }

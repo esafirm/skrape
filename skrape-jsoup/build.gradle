@@ -1,5 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version"
 }
 
 group 'nolambda.stream'
@@ -17,10 +18,10 @@ compileTestKotlin {
 }
 
 dependencies {
-    compile project(':skrape-core')
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation project(':skrape-core')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    compile 'org.jsoup:jsoup:1.10.3'
+    api 'org.jsoup:jsoup:1.10.3'
 
     /* --------------------------------------------------- */
     /* > Test */
