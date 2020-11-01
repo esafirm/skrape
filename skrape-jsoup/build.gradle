@@ -21,7 +21,7 @@ dependencies {
     implementation project(':skrape-core')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    implementation 'org.jsoup:jsoup:1.10.3'
+    api 'org.jsoup:jsoup:1.10.3'
 
     /* --------------------------------------------------- */
     /* > Test */
