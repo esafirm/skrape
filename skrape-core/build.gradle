@@ -1,4 +1,7 @@
-apply plugin: 'kotlin'
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version"
+}
 
 compileKotlin {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
@@ -8,7 +11,7 @@ compileTestKotlin {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
+    archiveClassifier.set("sources")
     from sourceSets.main.allSource
 }
 
@@ -17,10 +20,11 @@ artifacts {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     /* JSON */
-    compile 'com.github.salomonbrys.kotson:kotson:2.5.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1'
 
     /* --------------------------------------------------- */
     /* > Test */
