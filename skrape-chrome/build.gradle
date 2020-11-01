@@ -13,7 +13,7 @@ repositories {
 dependencies {
     implementation project(':skrape-core')
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    implementation 'org.seleniumhq.selenium:selenium-java:3.8.1'
+    api 'org.seleniumhq.selenium:selenium-java:3.8.1'
 
     /* --------------------------------------------------- */
     /* > Test */
