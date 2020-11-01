@@ -5,7 +5,12 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import nolambda.skrape.nodes.*
 
-class JsonPageSerializer(private val json: Json = Json { encodeDefaults = true }) : PageSerializer<String> {
+class JsonPageSerializer(
+    private val json: Json = Json {
+        encodeDefaults = true
+        ignoreUnknownKeys = true
+    }
+) : PageSerializer<String> {
 
     override fun serialize(page: Page): String {
         return json.encodeToString(page.evaluate())

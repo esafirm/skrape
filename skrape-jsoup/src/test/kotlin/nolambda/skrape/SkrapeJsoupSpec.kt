@@ -1,11 +1,12 @@
 package nolambda.skrape
 
-import com.google.gson.Gson
-import com.google.gson.JsonArray
 import io.kotlintest.matchers.beGreaterThan
 import io.kotlintest.matchers.shouldBe
 import io.kotlintest.matchers.shouldNotBe
 import io.kotlintest.specs.StringSpec
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import nolambda.skrape.nodes.*
 import nolambda.skrape.processor.jsoup.JsoupPageAdapter
 import nolambda.skrape.result.SkrapeResult
@@ -16,11 +17,11 @@ typealias SimpleSkrape = Skrape<SkrapeResult>
 class SkrapeJsoupSpec : StringSpec() {
     init {
         val skrape = Skrape(JsoupPageAdapter(), enableLog = true)
-        val gson = Gson()
 
         "it parsing from local file" {
             val result = requestWithFile(skrape, ::createFirstPage)
-            val response = gson.fromJson(result, HackerNewsResponse::class.java)
+            val json = Json { ignoreUnknownKeys = true }
+            val response = json.decodeFromString<HackerNewsResponse>(result)
 
             result shouldNotBe null
             response shouldNotBe null
@@ -33,9 +34,9 @@ class SkrapeJsoupSpec : StringSpec() {
 
         "it support un-named query" {
             val result = requestWithFile(skrape, ::createSecondPagee)
-            val array = gson.fromJson(result, JsonArray::class.java)
+            val array = Json.decodeFromString<JsonArray>(result)
 
-            array.size() shouldBe beGreaterThan(1)
+            array.size shouldBe beGreaterThan(1)
         }
     }
 }
