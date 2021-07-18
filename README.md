@@ -1,3 +1,5 @@
+![OSS Skrape Banner](https://user-images.githubusercontent.com/1691440/126060801-fc14e96d-d800-4fa6-be92-eb49847eb112.gif)
+
 ## Skrape [![](https://jitpack.io/v/esafirm/skrape.svg)](https://jitpack.io/#esafirm/skrape)
 
 Turn your HTML to JSON with graph based Kotlin DSL 💪
